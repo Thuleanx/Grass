@@ -6,7 +6,7 @@ Basic version:
 1. We start with a flat plane mesh, the vertex shader need not do anything special with the mesh.
 2. We will use Billboarding to model our grass, as opposed to a 3D grass model.
 3. Use compute shader to generate the grass vertices, as well as additional information for aesthetic effects.
-4. Use geometry shader to generate the grass blades billboards, one per vertex.
+4. Use geometry shader to generate the grass blades billboards, one per vertex (i'm not totally sure if this would be geometry shader or if we can just use the compute shader for everything).
 5. Use fragment shader to light our grass + give it pretty colors.
 
 Interactivity:
@@ -33,3 +33,19 @@ Tutorials:
 - Grass with URP using Geometry Shader: https://www.youtube.com/watch?v=YghAbgCN8XA
 - Stylized Grass with URP https://danielilett.com/2021-08-24-tut5-17-stylised-grass/
 - Recreating Zelda's grass in URP: https://www.youtube.com/watch?v=MeyW_aYE82s
+- Interactive Foliage: https://www.youtube.com/watch?v=BhtNgHg8gqk
+
+Rough plan of action:
+- [ ] Start with boilerplate code from realtime project. Draw a plane.
+- [ ] Use compute shader to generate a compute buffer of grass positions.
+- [ ] Use geometry shader to generate a simple triangle on top of each position.
+- [ ] Check if the above renders.
+- [ ] Draw grass texture.
+**At this point of the project, grass would be already visible. The rest are added features and optimizations**
+- [ ] Switch geometry shader to generate 3 billboards for each grass.
+- [ ] Fragment shader to sample the grass texture.
+- [ ] Vary the height of the grass, and color by height.
+- [ ] Switch camera movement from centering around a sphere at a fixed angle (because grass will definitely look really crappy from top down)
+- [ ] Pass sphere position to shader, sway generated grass away from sphere position.
+- [ ] Add noise to grass height and color. Also add wind.
+- [ ] Create a velocity texture and use compute buffer to dims it every frame. Then draw a circle mask around the character at the position of the controller, with intensity scaled by character velocity.
