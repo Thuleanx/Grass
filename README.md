@@ -28,12 +28,8 @@ A couple of time-saving optimizations are:
 3. Apply various simple filters on the grass.
 
 Tutorials:
-Unity Grass series by Acerola: https://www.youtube.com/playlist?list=PLUKV95Q13e_U7nZFPIpiG9-z_3BdWcCOA
-Grass Fields in Unity URP using Compute Shader: https://www.youtube.com/watch?v=DeATXF4Szqo
-Grass with URP using Geometry Shader: https://www.youtube.com/watch?v=YghAbgCN8XA
-Stylized Grass with URP https://danielilett.com/2021-08-24-tut5-17-stylised-grass/
-Recreating Zelda's grass in URP: https://www.youtube.com/watch?v=MeyW_aYE82s
-
-
-
-
+- Unity Grass series by Acerola: https://www.youtube.com/playlist?list=PLUKV95Q13e_U7nZFPIpiG9-z_3BdWcCOA 
+- Grass Fields in Unity URP using Compute Shader: https://www.youtube.com/watch?v=DeATXF4Szqo
+- Grass with URP using Geometry Shader: https://www.youtube.com/watch?v=YghAbgCN8XA
+- Stylized Grass with URP https://danielilett.com/2021-08-24-tut5-17-stylised-grass/
+- Recreating Zelda's grass in URP: https://www.youtube.com/watch?v=MeyW_aYE82s
