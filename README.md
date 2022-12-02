@@ -17,7 +17,7 @@ Interactivity:
   - Harder version if there's time: Have a distortion texture that stores the velocity of objects on the plane (brighter for higher velocity), and fades away. This is done by the CPU passing in the position of actors on the plane, and the compute buffer recalculating the distortion texture as the object moves each frame.
   
 Optimizations + extra features:
-1. Camera Fulstum Culling: the grass are only generated if they are in the view fulstrum, and only if they are a certain distance away.
+1. Camera Fulstum Culling (on GPU side): the grass are only generated if they are in the view fulstrum, and only if they are a certain distance away.
 2. Switch to using a grass mesh, then apply LOD (previously implemented in old project)
 3. Randomize grass size and color.
 4. Don't render the plane mesh, since the grass would cover it.
@@ -26,3 +26,14 @@ A couple of time-saving optimizations are:
 1. Reuse code to generate varied geometry.
 2. Reuse camera movements and boilerplate code.
 3. Apply various simple filters on the grass.
+
+Tutorials:
+Unity Grass series by Acerola: https://www.youtube.com/playlist?list=PLUKV95Q13e_U7nZFPIpiG9-z_3BdWcCOA
+Grass Fields in Unity URP using Compute Shader: https://www.youtube.com/watch?v=DeATXF4Szqo
+Grass with URP using Geometry Shader: https://www.youtube.com/watch?v=YghAbgCN8XA
+Stylized Grass with URP https://danielilett.com/2021-08-24-tut5-17-stylised-grass/
+Recreating Zelda's grass in URP: https://www.youtube.com/watch?v=MeyW_aYE82s
+
+
+
+
