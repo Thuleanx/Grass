@@ -41,6 +41,7 @@ Rough plan of action:
 - [ ] Use geometry shader to generate a simple triangle on top of each position.
 - [ ] Check if the above renders.
 - [ ] Draw grass texture.
+
 **At this point of the project, grass would be already visible. The rest are added features and optimizations**
 - [ ] Switch geometry shader to generate 3 billboards for each grass.
 - [ ] Fragment shader to sample the grass texture.
