@@ -49,3 +49,4 @@ Rough plan of action:
 - [ ] Pass sphere position to shader, sway generated grass away from sphere position.
 - [ ] Add noise to grass height and color. Also add wind.
 - [ ] Create a velocity texture and use compute buffer to dims it every frame. Then draw a circle mask around the character at the position of the controller, with intensity scaled by character velocity.
+- [ ] Instead of dimming, use the mass-spring damper equation
