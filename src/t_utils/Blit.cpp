@@ -1,19 +1,6 @@
-#include "realtime.h"
-#include <iostream>
-#include "utils/scenedata.h"
-#include "settings.h"
-#include <glm/gtc/type_ptr.hpp>
-#include <random>
-#include <chrono>
-#include <time.h>
-#include <iomanip>
+#include "Blit.h"
 
-
-#define f(i,a,b) for (int i = a; i < b; i++)
-using namespace glm;
-using namespace std;
-
-std::vector<GLfloat> fullscreen_quad_data =
+std::vector<GLfloat> Blit::fullscreen_quad_data =
 { 
 	//     POSITIONS    //
 	//     UV 			//
@@ -30,14 +17,15 @@ std::vector<GLfloat> fullscreen_quad_data =
     1, -1, 0,
 	1, 0
 };
+GLuint Blit::vao;
+GLuint Blit::vbo;
 
-void Realtime::a_initBlit() {
+void Blit::initialize() {
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
 
-	glGenVertexArrays(1, &a_blitVAO);
-	glGenBuffers(1, &a_blitVBO);
-
-	glBindVertexArray(a_blitVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, a_blitVBO);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	glBufferData(GL_ARRAY_BUFFER, fullscreen_quad_data.size() * sizeof(GLfloat), fullscreen_quad_data.data(), 
 		GL_STATIC_DRAW);
@@ -52,14 +40,19 @@ void Realtime::a_initBlit() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Realtime::a_blit(GLuint fbo) {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+void Blit::blit(const Framebuffer &fbo) {
+	fbo.use();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glBindVertexArray(a_blitVAO);
+    glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	fbo.detach();
+}
+
+void Blit::destroy() {
+	glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
 }

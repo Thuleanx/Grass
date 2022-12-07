@@ -24,7 +24,7 @@ uniform vec2 nearPlaneSz;
 uniform mat4 projectionMatrix;
 
 vec3 getPosVS(vec2 uvPos) {
-	return texture(_posVS, uvPos);
+        return vec3(texture(_posVS, uvPos));
 }
 
 vec2 getUV(vec3 posVS) {

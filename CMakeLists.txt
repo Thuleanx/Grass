@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # Sets project name
-project(projects_realtime LANGUAGES CXX C)
+project(grass LANGUAGES CXX C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -27,10 +27,14 @@ include_directories(src)
 add_executable(${PROJECT_NAME}
     src/main.cpp
 
+    src/t_utils/ShaderProgram.h
+    src/t_utils/Blit.h
+    src/t_utils/Blit.cpp
+    src/t_utils/Framebuffer.h
+    src/t_utils/Framebuffer.cpp
 
     src/t_realtime.cpp
     src/a_realtime.cpp
-    src/blit_realtime.cpp
     src/dataLoading_realtime.cpp
     src/pipeline_realtime.cpp
     src/realtime.cpp

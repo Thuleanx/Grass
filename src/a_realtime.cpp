@@ -3,44 +3,31 @@
 #include "utils/scenedata.h"
 #include "settings.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "t_utils/Blit.h"
 
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace glm;
 using namespace std;
 
-void Realtime::a_createTexture(GLuint &texture,
-	GLenum format, GLenum internalFormat, GLenum dataType,
-    GLenum filter, GLenum wrapMode
-) {
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+// void Realtime::a_createTexture(GLuint &texture,
+// 	GLenum format, GLenum internalFormat, GLenum dataType,
+//     GLenum filter, GLenum wrapMode
+// ) {
+// 	glGenTextures(1, &texture);
+// 	glBindTexture(GL_TEXTURE_2D, texture);
+// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, format, m_fbo_width, m_fbo_height, 
-		0, internalFormat, dataType, nullptr);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
+// 	glTexImage2D(GL_TEXTURE_2D, 0, format, m_fbo_width, m_fbo_height, 
+// 		0, internalFormat, dataType, nullptr);
+// 	glBindTexture(GL_TEXTURE_2D, 0);
+// }
 
 void Realtime::a_deleteFBOandTextures() {
     glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	glDeleteTextures(1, &a_fbo_default_ambientColor);
-	glDeleteTextures(1, &a_fbo_default_depth);
-	glDeleteTextures(1, &a_fbo_default_normalVS);
-	glDeleteTextures(1, &a_fbo_default_diffuseSpecular);
-	glDeleteTextures(1, &a_fbo_default_posVS);
-	glDeleteTextures(1, &a_fbo_AO_value);
-	glDeleteTextures(1, &a_fbo_blur_value);
-	glDeleteTextures(1, &a_fbo_normalOutput_color);
-
-	glDeleteFramebuffers(1, &a_fbo_default);
-	glDeleteFramebuffers(1, &a_fbo_AO);
-	glDeleteFramebuffers(1, &a_fbo_blur);
-	glDeleteFramebuffers(1, &a_fbo_normalOutput);
 }
 
 void Realtime::a_deleteOpenGLVars() {
@@ -49,17 +36,9 @@ void Realtime::a_deleteOpenGLVars() {
 	for (const auto & [key, value] : t_vao) 
 		glDeleteVertexArrays(1, &value);
 
-	glDeleteVertexArrays(1, &a_blitVAO);
-	glDeleteBuffers(1, &a_blitVBO);
+    Blit::destroy();
 
-	a_deleteFBOandTextures();
-	glDeleteTextures(1, &a_fbo_AO_noiseTexture);
-
-	glDeleteProgram(a_shader_default);
-	glDeleteProgram(a_shader_postprocessing);
-	glDeleteProgram(a_shader_ambientCombine);
-	glDeleteProgram(a_shader_blur);
-	glDeleteProgram(a_shader_ambientOcclusion);
+    a_deleteFBOandTextures();
 
 	t_shapeMap.clear(); // effectively drops references to unique ptr 
 }

@@ -17,6 +17,7 @@
 #include "utils/sceneparser.h"
 #include "shapes/iShape.h"
 #include "camera/camera.h"
+#include "t_utils/Framebuffer.h"
 
 class Realtime : public QOpenGLWidget
 {
@@ -75,51 +76,19 @@ private:
 	void t_generateShapeMap();
 	void t_calculateVAOVBO();
 
-	GLuint t_fbo_main = 5; // this is the screen fbo
+    Framebuffer fbo_main = Framebuffer(1);
 
 	GLuint a_shader_default;
-	GLuint a_shader_postprocessing;
-	GLuint a_shader_ambientCombine;
-	GLuint a_shader_blur;
-	GLuint a_shader_ambientOcclusion;
 
-	GLuint a_fbo_default;
-	GLuint a_fbo_default_diffuseSpecular;
-	GLuint a_fbo_default_ambientColor;
-	GLuint a_fbo_default_normalVS;
-	GLuint a_fbo_default_posVS;
-	GLuint a_fbo_default_depth;
-
-	GLuint a_fbo_AO_noiseTexture;
-	GLuint a_fbo_AO;
-	GLuint a_fbo_AO_value;
-
-	GLuint a_fbo_blur;
-	GLuint a_fbo_blur_value;
-
-	GLuint a_fbo_normalOutput;
-	GLuint a_fbo_normalOutput_color;
-
-	GLuint a_blitVAO;
-	GLuint a_blitVBO;
-
-	void a_createTexture(GLuint &texture, 
-		GLenum format, GLenum internalFormat, GLenum dataType,
-        GLenum filter = GL_LINEAR, GLenum wrapMode = GL_REPEAT
-	); 
 	void a_deleteOpenGLVars();
 	void a_deleteFBOandTextures();
 
 	void a_drawScene(const GLuint &shader);
-	void a_loadSSAOData(const GLuint &shader);
 	void a_loadSceneGlobalData(const GLuint &shader);
 	void a_loadCameraData(const GLuint &shader);
 	void a_loadLightData(const GLuint &shader);
 	void a_loadShape(const GLuint &shader, int index);
 
-	void a_initBlit();
-    void a_blit(GLuint fbo);
-	void a_initSSAOKernel();
 	void a_initFBOs();
 	void a_pipelineInit();
 	void a_pipelineRun();

@@ -4,9 +4,8 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <iostream>
-#include "utils/scenedata.h"
-#include "settings.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "t_utils/Blit.h"
 
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace glm;
@@ -66,9 +65,9 @@ void Realtime::initializeGL() {
 	m_fbo_height = size().height();
 	m_fbo_width = size().width();
 
-	a_initSSAOKernel(); 
+
 	a_pipelineInit();
-	a_initBlit();
+    Blit::initialize();
 }
 
 void Realtime::paintGL() {
