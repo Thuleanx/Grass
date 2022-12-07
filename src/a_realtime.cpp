@@ -37,16 +37,16 @@ void Realtime::a_deleteOpenGLVars() {
 		glDeleteVertexArrays(1, &value);
 
     Blit::destroy();
-
     a_deleteFBOandTextures();
+	shader_default.destroy();
 
 	t_shapeMap.clear(); // effectively drops references to unique ptr 
 }
 
 
-void Realtime::a_drawScene(const GLuint &shader) {
+void Realtime::a_drawScene(const ShaderProgram &shader) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(shader);
+	shader.useProgram();
     a_loadSceneGlobalData(shader);
     a_loadCameraData(shader);
     a_loadLightData(shader);
@@ -72,5 +72,5 @@ void Realtime::a_drawScene(const GLuint &shader) {
 	}
 
 	glBindVertexArray(0);
-	glUseProgram(0);
+	shader.detach();
 }

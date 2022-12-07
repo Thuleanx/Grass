@@ -18,6 +18,7 @@
 #include "shapes/iShape.h"
 #include "camera/camera.h"
 #include "t_utils/Framebuffer.h"
+#include "t_utils/ShaderProgram.h"
 
 class Realtime : public QOpenGLWidget
 {
@@ -77,17 +78,16 @@ private:
 	void t_calculateVAOVBO();
 
     Framebuffer fbo_main = Framebuffer(1);
-
-	GLuint a_shader_default;
+	ShaderProgram shader_default;
 
 	void a_deleteOpenGLVars();
 	void a_deleteFBOandTextures();
 
-	void a_drawScene(const GLuint &shader);
-	void a_loadSceneGlobalData(const GLuint &shader);
-	void a_loadCameraData(const GLuint &shader);
-	void a_loadLightData(const GLuint &shader);
-	void a_loadShape(const GLuint &shader, int index);
+	void a_drawScene(const ShaderProgram &shader);
+	void a_loadSceneGlobalData(const ShaderProgram &shader);
+	void a_loadCameraData(const ShaderProgram &shader);
+	void a_loadLightData(const ShaderProgram &shader);
+	void a_loadShape(const ShaderProgram &shader, int index);
 
 	void a_initFBOs();
 	void a_pipelineInit();

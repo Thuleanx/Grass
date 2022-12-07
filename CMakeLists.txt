@@ -28,6 +28,7 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
 
     src/t_utils/ShaderProgram.h
+    src/t_utils/ShaderProgram.cpp
     src/t_utils/Blit.h
     src/t_utils/Blit.cpp
     src/t_utils/Framebuffer.h

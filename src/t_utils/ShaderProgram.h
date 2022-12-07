@@ -5,61 +5,32 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 #include <GL/glew.h>
-#include <QFile>
-#include <QTextStream>
 #include <iostream>
+#include <vector>
+#include <glm/glm.hpp>
 
 class ShaderProgram {
 public:
 	void initializeProgram() { programID = glCreateProgram(); }
-	void attachShader(GLenum shaderType, const char *filepath) {
-        GLuint shaderID = glCreateShader(shaderType);
-
-        // Read shader file.
-        std::string code;
-        QString filepathStr = QString(filepath);
-        QFile file(filepathStr);
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream stream(&file);
-            code = stream.readAll().toStdString();
-        }else{
-            throw std::runtime_error(std::string("Failed to open shader: ")+filepath);
-        }
-
-        // Compile shader code.
-        const char *codePtr = code.c_str();
-        glShaderSource(shaderID, 1, &codePtr, nullptr); // Assumes code is null terminated
-        glCompileShader(shaderID);
-
-        // Print info log if shader fails to compile.
-        GLint status;
-        glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
-
-        if (status == GL_FALSE) {
-            GLint length;
-            glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &length);
-
-            std::string log(length, '\0');
-            glGetShaderInfoLog(shaderID, length, nullptr, &log[0]);
-
-            glDeleteShader(shaderID);
-            throw std::runtime_error(log);
-        }
-
-		glAttachShader(programID, shaderID);
-		createdShaders.push_back(shaderID);
-	}
+	void attachShader(GLenum shaderType, const char *filepath);
 	void finalizeProgram() {
 		glLinkProgram(programID);
-		while (createdShaders.Count) {
+        while (createdShaders.size()) {
 			glDeleteShader(createdShaders.back());
 			createdShaders.pop_back();
 		}
 	}
-	void useProgram() {
-		glUseProgram(programID);
-	}
+	void useProgram() const { glUseProgram(programID); }
+	void detach() const { glUseProgram(0); }
+	void destroy() { glDeleteProgram(programID); }
+
+	void setFloat(std::string variableName, float value) const;
+	void setInt(std::string variableName, int value) const;
+	void setVec3(std::string variableName, glm::vec3 value) const;
+	void setVec4(std::string variableName, glm::vec4 value) const;
+	void setMat4(std::string variableName, glm::mat4 value) const;
 private:
 	GLuint programID;
 	std::vector<GLuint> createdShaders;
+	GLuint getShaderLoc(std::string variableName) const;
 };

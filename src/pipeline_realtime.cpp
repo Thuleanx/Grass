@@ -1,7 +1,6 @@
 #include "realtime.h"
 #include <iostream>
 #include "utils/scenedata.h"
-#include "utils/shaderloader.h"
 #include "settings.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "t_utils/Blit.h"
@@ -42,8 +41,10 @@ void Realtime::a_pipelineInit()
 	printf("max local work group invocations %i\n", work_grp_inv);
 
 	// load shaders in
-	a_shader_default = ShaderLoader::createShaderProgram(":/resources/shaders/default.vert",
-														 ":/resources/shaders/default.frag");
+	shader_default.initializeProgram();
+	shader_default.attachShader(GL_VERTEX_SHADER, ":/resources/shaders/default.vert");
+	shader_default.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/default.frag");
+	shader_default.finalizeProgram();
 }
 
 void Realtime::a_pipelineRun()
@@ -53,7 +54,7 @@ void Realtime::a_pipelineRun()
 drawToDefault:
 {
 	fbo_main.use();
-	a_drawScene(a_shader_default);
+    a_drawScene(shader_default);
 }
 
 unbinding:
