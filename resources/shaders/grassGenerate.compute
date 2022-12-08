@@ -28,6 +28,7 @@ layout(std430, binding=1) buffer DrawTriangles
 };
 
 uniform float GrassHeight;
+uniform float GrassBaseDistance;
 uniform int numTriangles;
 
 // vertices defined in counterclockwise order, please
@@ -50,17 +51,26 @@ void constructAndSetTriangle(int loc, vec3 v0, vec3 v1, vec3 v2) {
 void main() {
 	if (numTriangles< int(gl_GlobalInvocationID.x)) return;
 
-	int i = int(gl_GlobalInvocationID.x) * 3;
+	int j = int(gl_GlobalInvocationID.x);
+	int i = int(gl_GlobalInvocationID.x)/3*3; // vertex you center on
 
 	vec3 inputs[3];
 	for (int k = 0; k < 3; k++)
 		inputs[k] = vertices[k + i].posOS;
 	vec3 normalBase = triangleNormal(inputs[0], inputs[1], inputs[2]);
 
-	vec3 center = (inputs[0] + inputs[1] + inputs[2])/3 + GrassHeight * normalBase;
+	vec3 center = vertices[j].posOS + GrassHeight * normalBase;
+
+	vec3 tangent = vec3(normalBase.y, -normalBase.x, normalBase.z);
+	vec3 bitangent = cross(tangent, normalBase);
+
+	for (int k = 0; k < 3; k++) {
+		float angle = 2.00 * float(k) *  3.14159265359 / 3;
+		inputs[k] = vertices[j].posOS + tangent * sin(angle) * GrassBaseDistance + bitangent * cos(angle) * GrassBaseDistance;
+	}
 
 	// constructAndSetTriangle(i/3, inputs[0], inputs[1], inputs[2]);
-	constructAndSetTriangle(i, inputs[0], inputs[1], center);
-	constructAndSetTriangle(i+1, inputs[1], inputs[2], center);
-	constructAndSetTriangle(i+2, inputs[2], inputs[0], center);
+	constructAndSetTriangle(3*j, inputs[0], inputs[1], center);
+	constructAndSetTriangle(3*j+1, inputs[1], inputs[2], center);
+	constructAndSetTriangle(3*j+2, inputs[2], inputs[0], center);
 }

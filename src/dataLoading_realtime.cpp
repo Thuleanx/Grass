@@ -19,15 +19,7 @@ void Realtime::a_loadSceneGlobalData(const ShaderProgram &shader) {
 
 void Realtime::a_loadCameraData(const ShaderProgram &shader) {
 	shader.setVec4("camPos", t_camera.getPosition());
-	// glm::vec4 camPos = t_camera.getPosition();
-	// glUniform4fv(glGetUniformLocation(shader, "camPos"), 1, glm::value_ptr(camPos));
-
-	// GLint viewLocation = glGetUniformLocation(shader, "viewMatrix");
-	// glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr( t_camera.getViewMatrix() ));
 	shader.setMat4("viewMatrix", t_camera.getViewMatrix());
-
-	// GLint projectionLocation = glGetUniformLocation(shader, "projMatrix");
-	// glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr( t_camera.getProjectionMatrix() ));
     shader.setMat4("projMatrix", t_camera.getProjectionMatrix());
 }
 
@@ -43,38 +35,17 @@ void Realtime::a_loadLightData(const ShaderProgram &shader) {
 		if (t == LightType::LIGHT_DIRECTIONAL) prefixLightType = "dir";
 		if (t == LightType::LIGHT_SPOT) prefixLightType = "spot";
 
-		if (t == LightType::LIGHT_SPOT || t == LightType::LIGHT_POINT) {
+		if (t == LightType::LIGHT_SPOT || t == LightType::LIGHT_POINT) 
             shader.setVec4(prefixLightType + "Lights[" + to_string(i) + "].pos", pos);
-			// string prop = ;
-			// glUniform4fv(glGetUniformLocation(shader, prop.c_str()), 
-			// 	1, glm::value_ptr(pos));
-		}
-		if (t == LightType::LIGHT_DIRECTIONAL || t == LightType::LIGHT_SPOT) {
+		if (t == LightType::LIGHT_DIRECTIONAL || t == LightType::LIGHT_SPOT)
 			shader.setVec4(prefixLightType + "Lights[" + to_string(i) + "].dir", dir);
-			// string prop = ;
-			// glUniform4fv(glGetUniformLocation(shader, prop.c_str()), 
-			// 	1, glm::value_ptr(dir));
-		}
-		if (t == LightType::LIGHT_POINT || t == LightType::LIGHT_SPOT) {
+		if (t == LightType::LIGHT_POINT || t == LightType::LIGHT_SPOT)
 			shader.setVec3(prefixLightType + "Lights[" + to_string(i) + "].function", function);
-			// string prop = ;
-			// glUniform3fv(glGetUniformLocation(shader, prop.c_str()), 
-			// 	1, glm::value_ptr(function));
-		}
-		if (t == LightType::LIGHT_SPOT) {
-			shader.setFloat(prefixLightType + "Lights[" + to_string(i) + "].penumbra", penumbra);
-			// string prop = prefixLightType + "Lights[" + to_string(i) + "].penumbra";
-			// glUniform1f(glGetUniformLocation(shader, prop.c_str()), penumbra);
-		}
+		if (t == LightType::LIGHT_SPOT) shader.setFloat(prefixLightType + "Lights[" + to_string(i) + "].penumbra", penumbra);
 		if (t == LightType::LIGHT_SPOT) {
 			shader.setFloat(prefixLightType + "Lights[" + to_string(i) + "].angle",angle);
-			// string prop = prefixLightType + "Lights[" + to_string(i) + "].angle";
-            // glUniform1f(glGetUniformLocation(shader, prop.c_str()), angle);
 		}
         {
-            // string prop = prefixLightType + "Lights[" + to_string(i) + "].color";
-            // glUniform4fv(glGetUniformLocation(shader, prop.c_str()),
-            //     1, glm::value_ptr(color));
 			shader.setVec4(prefixLightType + "Lights[" + to_string(i) + "].color", color);
         }
 		lightIndex[(int) t]++;
@@ -102,8 +73,6 @@ void Realtime::a_loadLightData(const ShaderProgram &shader) {
 }
 
 void Realtime::a_loadShape(const ShaderProgram &shader, int index) {
-	// GLint modelLocation = glGetUniformLocation(shader, "modelMatrix");
-	// glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(  ));
 	shader.setMat4("modelMatrix", t_renderData.shapes[index].ctm);
 
 	const SceneMaterial &mat = t_renderData.shapes[index].primitive.material;
@@ -111,8 +80,4 @@ void Realtime::a_loadShape(const ShaderProgram &shader, int index) {
 	shader.setVec4("ambient", mat.cAmbient);
 	shader.setVec4("diffuse", mat.cDiffuse);
 	shader.setVec4("specular", mat.cSpecular);
-	// glUniform1f(glGetUniformLocation(shader, "shininess"), mat.shininess);
-	// glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(mat.cAmbient));
-	// glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(mat.cDiffuse));
-	// glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(mat.cSpecular));
 }

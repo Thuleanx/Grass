@@ -4,7 +4,7 @@ in vec4 posWS;
 in vec4 normalWS;
 
 // out vec4 fragColor;
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 uniform vec4 camPos;
 
@@ -31,13 +31,10 @@ uniform Light pointLights[8];
 uniform Light dirLights[8];
 uniform Light spotLights[8];
 
-// ig for project 6
 float attenuation(vec3 function, float dist) {
-	// really dont like sqrt (for dist computations) but maybe this is fine
 	return min(1.0, 1.0/(function[0] + function[1] * dist + function[2] * dist * dist));
 }
 
-// quite useful
 float saturate(float a) {
 	return clamp(a,0,1);
 }
@@ -49,9 +46,7 @@ float falloff(vec4 lightDir, vec4 dirToLight, float lightAngle, float lightPenum
 	return saturate(1-falloff); 
 }
 
-
 vec4 calculateColor(vec4 lightDir, vec4 camDir, vec4 normWS) {
-	// diffuse
 	vec4 con = vec4(0);
 	float difMult = saturate(dot(normWS, -lightDir));
 	con += diffuse * kd * difMult;
@@ -64,8 +59,6 @@ vec4 calculateColor(vec4 lightDir, vec4 camDir, vec4 normWS) {
 }
 
 void main() {
-	// fragColor = vec4(0);
-	fragAmbientColor = ka * ambient;
 	fragColor = ka * ambient;
 
 	vec4 positionWS = vec4(vec3(posWS), 1);

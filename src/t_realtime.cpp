@@ -119,11 +119,12 @@ void Realtime::t_calculateVAOVBO() {
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * dataOnlyPos.size(), dataOnlyPos.data(), GL_STREAM_READ);
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, vbo);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * dataOnlyPos.size() * 6, nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * dataOnlyPos.size() * 18, nullptr, GL_STATIC_DRAW);
 
 		errorCheck();
 
 		shader_compute_grass.setFloat("GrassHeight", 0.2f);
+		shader_compute_grass.setFloat("GrassBaseDistance", 0.05f);
 		shader_compute_grass.setInt("numTriangles", triangleCnt);
 
 		glDispatchCompute(triangleCnt, 1, 1);
