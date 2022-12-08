@@ -58,40 +58,22 @@ private:
 	int m_fbo_width;
 	int m_fbo_height;
 
-	// custom
-	int shapeBucketCnt = 6;
     std::string t_fileLoaded;
     RenderData t_renderData;
     Camera t_camera;
-    std::unordered_map<int, std::unique_ptr<iShape>> t_shapeMap;
-	std::unordered_map<int, GLuint> t_vao;
-	std::unordered_map<int, GLuint> t_vbo;
-	std::unordered_map<int, GLuint> t_vboInVerts;
 
 	bool t_recalculateVAO = false;
 	bool t_reloadscene = false;
-	bool a_resized = false;
 
-	int t_getKey(glm::vec4 camPos, RenderShapeData &shape) const;
     void t_loadScene();
-	void t_calculateLOD();
-	void t_generateShapeMap();
 	void t_calculateVAOVBO();
 
-    Framebuffer fbo_main = Framebuffer(1);
-	ShaderProgram shader_default;
-	ShaderProgram shader_compute_grass;
+	// void a_deleteOpenGLVars();
+	// void a_deleteFBOandTextures();
 
-	void a_deleteOpenGLVars();
-	void a_deleteFBOandTextures();
+	// void a_loadSceneGlobalData(const ShaderProgram &shader);
+	// void a_loadCameraData(const ShaderProgram &shader);
+	// void a_loadLightData(const ShaderProgram &shader);
 
-	void a_drawScene(const ShaderProgram &shader);
-	void a_loadSceneGlobalData(const ShaderProgram &shader);
-	void a_loadCameraData(const ShaderProgram &shader);
-	void a_loadLightData(const ShaderProgram &shader);
-	void a_loadShape(const ShaderProgram &shader, int index);
-
-	void a_initFBOs();
-	void a_pipelineInit();
-	void a_pipelineRun();
+	// void a_pipelineRun();
 };

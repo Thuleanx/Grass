@@ -35,7 +35,7 @@ void Realtime::finish() {
     this->makeCurrent();
 
     // Students: anything requiring OpenGL calls when the program exits should be done here
-	a_deleteOpenGLVars();
+    //a_deleteOpenGLVars();
 
     this->doneCurrent();
 }
@@ -66,7 +66,7 @@ void Realtime::initializeGL() {
 	m_fbo_width = size().width();
 
 
-	a_pipelineInit();
+    //a_pipelineInit();
     Blit::initialize();
 }
 
@@ -77,7 +77,7 @@ void Realtime::paintGL() {
     if (t_recalculateVAO) t_calculateVAOVBO();
 	t_recalculateVAO = false;
 
-    a_pipelineRun();
+    // a_pipelineRun();
 }
 
 void Realtime::resizeGL(int w, int h) {
@@ -90,8 +90,8 @@ void Realtime::resizeGL(int w, int h) {
 	m_fbo_height = size().height();
 	m_fbo_width = size().width();
 
-	a_deleteFBOandTextures();
-	a_initFBOs();
+	// a_deleteFBOandTextures();
+	// a_initFBOs();
 }
 
 void Realtime::sceneChanged() {

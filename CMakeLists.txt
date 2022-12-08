@@ -27,6 +27,8 @@ include_directories(src)
 add_executable(${PROJECT_NAME}
     src/main.cpp
 
+    src/grass/grass_handler.cpp
+    src/grass/grass_handler.h
     src/t_utils/ShaderProgram.h
     src/t_utils/ShaderProgram.cpp
     src/t_utils/Blit.h
