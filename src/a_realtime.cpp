@@ -9,22 +9,6 @@
 using namespace glm;
 using namespace std;
 
-// void Realtime::a_createTexture(GLuint &texture,
-// 	GLenum format, GLenum internalFormat, GLenum dataType,
-//     GLenum filter, GLenum wrapMode
-// ) {
-// 	glGenTextures(1, &texture);
-// 	glBindTexture(GL_TEXTURE_2D, texture);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
-
-// 	glTexImage2D(GL_TEXTURE_2D, 0, format, m_fbo_width, m_fbo_height, 
-// 		0, internalFormat, dataType, nullptr);
-// 	glBindTexture(GL_TEXTURE_2D, 0);
-// }
-
 void Realtime::a_deleteFBOandTextures() {
     glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

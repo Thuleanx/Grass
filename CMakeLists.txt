@@ -97,6 +97,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/ambientOcclusion.frag
         resources/shaders/blur.frag
         resources/shaders/ambientLighting.frag
+        resources/shaders/grassGenerate.compute
 )
 
 # GLEW: this provides support for Windows (including 64-bit)

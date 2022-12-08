@@ -13,13 +13,7 @@ class ShaderProgram {
 public:
 	void initializeProgram() { programID = glCreateProgram(); }
 	void attachShader(GLenum shaderType, const char *filepath);
-	void finalizeProgram() {
-		glLinkProgram(programID);
-        while (createdShaders.size()) {
-			glDeleteShader(createdShaders.back());
-			createdShaders.pop_back();
-		}
-	}
+	void finalizeProgram();
 	void useProgram() const { glUseProgram(programID); }
 	void detach() const { glUseProgram(0); }
 	void destroy() { glDeleteProgram(programID); }

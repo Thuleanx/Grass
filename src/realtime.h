@@ -66,6 +66,7 @@ private:
     std::unordered_map<int, std::unique_ptr<iShape>> t_shapeMap;
 	std::unordered_map<int, GLuint> t_vao;
 	std::unordered_map<int, GLuint> t_vbo;
+	std::unordered_map<int, GLuint> t_vboInVerts;
 
 	bool t_recalculateVAO = false;
 	bool t_reloadscene = false;
@@ -79,6 +80,7 @@ private:
 
     Framebuffer fbo_main = Framebuffer(1);
 	ShaderProgram shader_default;
+	ShaderProgram shader_compute_grass;
 
 	void a_deleteOpenGLVars();
 	void a_deleteFBOandTextures();

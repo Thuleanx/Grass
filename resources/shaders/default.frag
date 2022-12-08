@@ -69,8 +69,9 @@ vec4 calculateColor(vec4 lightDir, vec4 camDir, vec4 normWS) {
 }
 
 void main() {
-	fragColor = vec4(0);
+	// fragColor = vec4(0);
 	fragAmbientColor = ka * ambient;
+	fragColor = ka * ambient;
 
 	vec4 positionWS = vec4(vec3(posWS), 1);
 

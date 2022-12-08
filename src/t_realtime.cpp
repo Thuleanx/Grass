@@ -71,14 +71,29 @@ void Realtime::t_generateShapeMap() {
 	}
 }
 
+GLenum errorCheck()
+{
+	GLenum code;
+	const GLubyte *string;
+	code = glGetError();
+	if (code != GL_NO_ERROR)
+	{
+		string = gluErrorString(code);
+		fprintf(stderr, "OpenGL error: %s\n", string);
+	}
+	return code;
+}
+
 void Realtime::t_calculateVAOVBO() {
 	float numberOfObjeffect = tesselationMultiplier(t_renderData.shapes.size());
     for (const auto &[mapKey, shape_ptr] : t_shapeMap) {
 		// vbo and vao calculations here
 		if (!t_vao.count(mapKey)) glGenVertexArrays(1, &t_vao[mapKey]);
 		if (!t_vbo.count(mapKey)) glGenBuffers(1, &t_vbo[mapKey]);
+		if (!t_vboInVerts.count(mapKey)) glGenBuffers(1, &t_vboInVerts[mapKey]);
 		GLuint vao = t_vao[mapKey];
 		GLuint vbo = t_vbo[mapKey];
+		GLuint vbo_in = t_vboInVerts[mapKey];
 
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER,vbo);
@@ -90,8 +105,31 @@ void Realtime::t_calculateVAOVBO() {
 		shape_ptr->updateParams(settings.shapeParameter1 * multi, settings.shapeParameter2 * multi);
 
 		vector<float> data = shape_ptr->generateShape();
-		glBufferData(GL_ARRAY_BUFFER,data.size() * sizeof(GLfloat),data.data(), GL_STATIC_DRAW);
+		vector<float> dataOnlyPos;
+		f(i,0,data.size()) if (i % 6 < 3) dataOnlyPos.push_back(data[i]);
+		int triangleCnt = shape_ptr->shapeCount();
 
+		// we replace this stage by a compute shader 
+		shader_compute_grass.useProgram();
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vbo_in);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * dataOnlyPos.size(), dataOnlyPos.data(), GL_STREAM_READ);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, vbo);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * data.size(), nullptr, GL_STATIC_DRAW);
+
+		errorCheck();
+
+		shader_compute_grass.setFloat("GrassHeight", 0.00f);
+		shader_compute_grass.setInt("numTriangles", triangleCnt);
+
+		glDispatchCompute(triangleCnt, 1, 1);
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
+
+		shader_compute_grass.detach();
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, reinterpret_cast<void*>(0));

@@ -45,6 +45,10 @@ void Realtime::a_pipelineInit()
 	shader_default.attachShader(GL_VERTEX_SHADER, ":/resources/shaders/default.vert");
 	shader_default.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/default.frag");
 	shader_default.finalizeProgram();
+
+	shader_compute_grass.initializeProgram();
+	shader_compute_grass.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/grassGenerate.compute");
+	shader_compute_grass.finalizeProgram();
 }
 
 void Realtime::a_pipelineRun()

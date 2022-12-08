@@ -43,6 +43,14 @@ void ShaderProgram::attachShader(GLenum shaderType, const char *filepath) {
 	createdShaders.push_back(shaderID);
 }
 
+void ShaderProgram::finalizeProgram() {
+	glLinkProgram(programID);
+	while (createdShaders.size()) {
+		glDeleteShader(createdShaders.back());
+		createdShaders.pop_back();
+	}
+}
+
 GLuint ShaderProgram::getShaderLoc(string variableName) const { return glGetUniformLocation(programID, variableName.c_str()); }
 
 void ShaderProgram::setFloat(string varName, float value) const { glUniform1f(getShaderLoc(varName), value); }
