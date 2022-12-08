@@ -3,11 +3,14 @@ layout(local_size_x = 1, local_size_y = 1, local_size_z=1) in;
 
 struct SourceVertex {
 	vec3 posOS;
+	float padding0;
 };
 
 struct DrawVertex {
 	vec3 posWS;
+	float padding0;
 	vec3 normWS;
+	float padding1;
 };
 
 struct DrawTriangle {
@@ -56,8 +59,8 @@ void main() {
 
 	vec3 center = (inputs[0] + inputs[1] + inputs[2])/3 + GrassHeight * normalBase;
 
-	constructAndSetTriangle(i/3, inputs[0], inputs[1], inputs[2]);
-	// constructAndSetTriangle(i, inputs[0], inputs[1], center);
-	// constructAndSetTriangle(i+1, inputs[1], inputs[2], center);
-	// constructAndSetTriangle(i+2, inputs[2], inputs[0], center);
+	// constructAndSetTriangle(i/3, inputs[0], inputs[1], inputs[2]);
+	constructAndSetTriangle(i, inputs[0], inputs[1], center);
+	constructAndSetTriangle(i+1, inputs[1], inputs[2], center);
+	constructAndSetTriangle(i+2, inputs[2], inputs[0], center);
 }

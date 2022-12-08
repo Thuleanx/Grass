@@ -50,7 +50,7 @@ void Realtime::a_drawScene(const ShaderProgram &shader) {
 
 			for (int& index : buckets[mapKey]) {
                 a_loadShape(shader,index);
-				glDrawArrays(GL_TRIANGLES, 0, shape_ptr->shapeCount());
+				glDrawArrays(GL_TRIANGLES, 0, shape_ptr->shapeCount() * 3);
 			}
 		}
 	}

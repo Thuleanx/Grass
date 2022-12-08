@@ -96,7 +96,7 @@ void Realtime::t_calculateVAOVBO() {
 		GLuint vbo_in = t_vboInVerts[mapKey];
 
 		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER,vbo);
+        glBindBuffer(GL_ARRAY_BUFFER,vbo);
 
 		// mapKey>>3 is the distance tesselation
 		float LODeffect = LODlookup(mapKey>>3);
@@ -106,7 +106,10 @@ void Realtime::t_calculateVAOVBO() {
 
 		vector<float> data = shape_ptr->generateShape();
 		vector<float> dataOnlyPos;
-		f(i,0,data.size()) if (i % 6 < 3) dataOnlyPos.push_back(data[i]);
+		f(i,0,data.size()) {
+			if (!((i/3) % 2)) dataOnlyPos.push_back(data[i]);
+			if (i%6==5) dataOnlyPos.push_back(0);
+		}
 		int triangleCnt = shape_ptr->shapeCount();
 
 		// we replace this stage by a compute shader 
@@ -116,11 +119,11 @@ void Realtime::t_calculateVAOVBO() {
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * dataOnlyPos.size(), dataOnlyPos.data(), GL_STREAM_READ);
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, vbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * data.size(), nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * dataOnlyPos.size() * 6, nullptr, GL_STATIC_DRAW);
 
 		errorCheck();
 
-		shader_compute_grass.setFloat("GrassHeight", 0.00f);
+		shader_compute_grass.setFloat("GrassHeight", 0.2f);
 		shader_compute_grass.setInt("numTriangles", triangleCnt);
 
 		glDispatchCompute(triangleCnt, 1, 1);
@@ -132,9 +135,10 @@ void Realtime::t_calculateVAOVBO() {
 		shader_compute_grass.detach();
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, reinterpret_cast<void*>(0));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, reinterpret_cast<void*>(0));
+
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, reinterpret_cast<void*>(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
 
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER,0);
