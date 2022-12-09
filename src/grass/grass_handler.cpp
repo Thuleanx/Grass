@@ -54,11 +54,15 @@ void GrassHandler::generateGrass() {
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
-		sizeof(GLfloat) * 8, reinterpret_cast<void*>(0));
+		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(0));
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
-		sizeof(GLfloat) * 8, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
+		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 
+		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(8 * sizeof(GLfloat)));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,0);

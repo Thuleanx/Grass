@@ -12,9 +12,13 @@ struct Settings {
 
 	// can't be modified / not exposed
 	float bladeWidth = 0.05f;
-    float bladeHeight = 1.0f;
+	float bladeHeight = 1.0f;
+    float bladeHeightScale = 1.0f;
 
-	std::string grassColor = "#647d34";
+	std::string grassColorTip = "#eff9d6";
+	std::string grassColorTop = "#ba5044";
+	std::string grassColorBottom = "#7a1c4b";
+	std::string grassColorAmbientOcclusion = "#1b0326";
 };
 
 // The global Settings object, will be initialized by MainWindow

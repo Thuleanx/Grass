@@ -33,7 +33,7 @@ class GrassHandler {
 
 		float bladeWidth = 0.05f;
 		float bladeHeight = 1.0f;
-		const int vertexOutputSizeBytes = 8;
+		const int vertexOutputSizeBytes = 12;
 		const int trianglesPerBlade = 1;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
 

@@ -28,4 +28,5 @@ private:
 	GLuint programID;
 	std::vector<GLuint> createdShaders;
 	GLuint getShaderLoc(std::string variableName) const;
+    void compileToString(const char* fileName, std::string &result);
 };

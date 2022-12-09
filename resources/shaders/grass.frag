@@ -2,6 +2,7 @@
 
 in vec4 posWS;
 in vec4 normalWS;
+in vec2 uv;
 
 // out vec4 fragColor;
 layout(location = 0) out vec4 fragColor;
@@ -32,7 +33,10 @@ uniform Light dirLights[8];
 uniform Light spotLights[8];
 
 // GRASS
-uniform vec4 grassColor;
+uniform vec4 grassColorTip;
+uniform vec4 grassColorTop;
+uniform vec4 grassColorBottom;
+uniform vec4 grassColorAmbientOcclusion;
 
 float attenuation(vec3 function, float dist) {
 	return min(1.0, 1.0/(function[0] + function[1] * dist + function[2] * dist * dist));
@@ -40,6 +44,15 @@ float attenuation(vec3 function, float dist) {
 
 float saturate(float a) {
 	return clamp(a,0,1);
+}
+
+vec4 saturate(vec4 a) {
+	return vec4(
+		clamp(a.x,0,1),
+		clamp(a.y,0,1),
+		clamp(a.z,0,1),
+		clamp(a.w,0,1)
+	);
 }
 
 float falloff(vec4 lightDir, vec4 dirToLight, float lightAngle, float lightPenumbra) {
@@ -91,6 +104,8 @@ void main() {
 	// 	fragColor += calculateColor(lightIncident, camDir, normWS) * spotLights[i].color * att;
 	// }
 
-	fragColor = grassColor;
+	fragColor = mix(grassColorAmbientOcclusion, mix(grassColorBottom, grassColorTop, uv.y), uv.y * uv.y)
+		+ mix(grassColorTip, vec4(0,0,0,1), 1 - uv.y*uv.y);
+	fragColor = saturate(fragColor);
 	fragColor.a = 1;
 }

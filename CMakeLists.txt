@@ -94,6 +94,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/grassGenerate.compute
         resources/shaders/grass.frag
         resources/shaders/grass.vert
+        resources/shaders/utils.compute
         resources/sceneFiles/default.xml
 )
 

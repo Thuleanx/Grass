@@ -37,6 +37,9 @@ private:
 	QSlider *densitySlider;
 	QDoubleSpinBox *densityBox;
 
+	// QSlider *bladeHeightScaleSlider;
+	// QDoubleSpinBox *bladeHeightScaleBox;
+
     QSlider *nearSlider;
     QSlider *farSlider;
     QDoubleSpinBox *nearBox;
