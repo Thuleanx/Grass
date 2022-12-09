@@ -39,8 +39,8 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.setInt("bladeCntX", settings.bladeCnt);
 	shader_compute_grass.setInt("bladeCntZ", settings.bladeCnt);
-	shader_compute_grass.setFloat("bladeWidth", bladeWidth);
-	shader_compute_grass.setFloat("bladeHeight", bladeHeight);
+	shader_compute_grass.setFloat("bladeWidth", settings.bladeWidth);
+	shader_compute_grass.setFloat("bladeHeight", settings.bladeHeight * settings.bladeHeightScale);
 	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 
 	glDispatchCompute(

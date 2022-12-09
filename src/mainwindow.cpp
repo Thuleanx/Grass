@@ -145,12 +145,12 @@ void MainWindow::initialize()
 	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 150, 150, settings.bladeCnt);
 	createLabel(vLayout, "Density");
 	createSliderDouble(vLayout, densitySlider, densityBox,
-					   1, 1, 100, 20,
-                       0.1f, 0.1f, 10.0f, 2.0f, settings.density);
-	// createLabel(vLayout, "Density");
-	// createSliderDouble(vLayout, densitySlider, densityBox,
-	// 				   1, 1, 100, 20,
-    //                    0.1f, 0.1f, 10.0f, 2.0f, settings.density);
+					   1, 1, 100, 30,
+                       0.1f, 0.1f, 10.0f, 3.0f, settings.density);
+	createLabel(vLayout, "Blade Height Scale");
+	createSliderDouble(vLayout, bladeHeightScaleSlider, bladeHeightScaleBox,
+					   1, 1, 100, 10,
+                       0.1f, 0.1f, 10.0f, 1.0f, settings.bladeHeightScale);
 
 	realtime->settingsChanged();
 }
