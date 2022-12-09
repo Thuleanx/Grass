@@ -4,17 +4,13 @@
 #include <string>
 
 struct Settings {
-	int numTriangles = 1;
-    int shapeParameter1 = 1;
-    int shapeParameter2 = 1;
+	int bladeCntX = 1;
+	int bladeCntZ = 1;
+	float density = 20;
+	float bladeWidth = 0.05f;
+    float bladeHeight = 1.0f;
     float nearPlane = 1;
     float farPlane = 1;
-    bool perPixelFilter = false;
-    bool kernelBasedFilter = false;
-    bool extraCredit1 = false;
-    bool extraCredit2 = false;
-    bool extraCredit3 = false;
-    bool extraCredit4 = false;
 };
 
 // The global Settings object, will be initialized by MainWindow

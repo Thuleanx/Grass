@@ -33,9 +33,9 @@ class GrassHandler {
         float density = 20;
 		float bladeWidth = 0.05f;
 		float bladeHeight = 1.0f;
-		int vertexOutputSizeBytes = 8;
+		const int vertexOutputSizeBytes = 8;
 		const int trianglesPerBlade = 1;
-        const glm::vec3 workGroupSz = glm::vec3(8,1,4);
+        const glm::vec3 workGroupSz = glm::vec3(8,1,8);
 
         int numGrassBlades() { return (bladeCntX*2+1) * (bladeCntZ*2+1);}
 		void generateGrass();

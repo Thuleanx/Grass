@@ -37,10 +37,6 @@ add_executable(${PROJECT_NAME}
     src/t_utils/Framebuffer.h
     src/t_utils/Framebuffer.cpp
 
-    src/t_realtime.cpp
-    src/a_realtime.cpp
-    src/dataLoading_realtime.cpp
-    src/pipeline_realtime.cpp
     src/realtime.cpp
     src/mainwindow.cpp
     src/settings.cpp

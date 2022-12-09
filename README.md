@@ -36,14 +36,15 @@ Tutorials:
 - Interactive Foliage: https://www.youtube.com/watch?v=BhtNgHg8gqk
 
 Rough plan of action:
-- [ ] Start with boilerplate code from realtime project. Draw a plane.
-- [ ] Use compute shader to generate a compute buffer of grass positions.
-- [ ] Use geometry shader to generate a simple triangle on top of each position.
-- [ ] Check if the above renders.
+- [x] Start with boilerplate code from realtime project. Draw a plane.
+- [x] Use compute shader to generate a compute buffer of grass positions.
+- [x] ~~Use geometry shader to generate a simple triangle on top of each position.~~
+- [x] Check if the above renders.
 - [ ] Draw grass texture.
 
 **At this point of the project, grass would be already visible. The rest are added features and optimizations**
-- [ ] Switch geometry shader to generate 3 billboards for each grass.
+- [x] ~~Switch geometry shader to generate 3 billboards for each grass.~~
+- [ ] Grass geometry in compute shader, multiple triangles per blade
 - [ ] Fragment shader to sample the grass texture.
 - [ ] Vary the height of the grass, and color by height.
 - [ ] Switch camera movement from centering around a sphere at a fixed angle (because grass will definitely look really crappy from top down)
