@@ -3,6 +3,7 @@
 in vec4 posWS;
 in vec4 normalWS;
 
+// out vec4 fragColor;
 layout(location = 0) out vec4 fragColor;
 
 uniform vec4 camPos;
@@ -29,6 +30,9 @@ struct Light {
 uniform Light pointLights[8];
 uniform Light dirLights[8];
 uniform Light spotLights[8];
+
+// GRASS
+uniform vec4 grassColor;
 
 float attenuation(vec3 function, float dist) {
 	return min(1.0, 1.0/(function[0] + function[1] * dist + function[2] * dist * dist));
@@ -86,7 +90,7 @@ void main() {
 	// 		spotLights[i].angle, spotLights[i].penumbra);
 	// 	fragColor += calculateColor(lightIncident, camDir, normWS) * spotLights[i].color * att;
 	// }
-	fragColor = (normalize(normalWS)+1)/2;
 
+	fragColor = grassColor;
 	fragColor.a = 1;
 }

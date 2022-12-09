@@ -96,8 +96,10 @@ void GrassHandler::awake(RenderData &renderData) {
 	initShaders();
 	initVAOVBO();
 	generateGrass();
+	shader_default.useProgram();
 	loadGrassData(shader_default);
 	loadLightData(shader_default, renderData);
+	shader_default.detach();
 }
 
 void GrassHandler::onResize(int screen_width, int screen_height, 
