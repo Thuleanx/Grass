@@ -46,7 +46,7 @@ void createBlade(
 	blade[0].vertices[2].posWS = v[2];
 
 	vec3 bladeNormal = triangleNormal(v[0],v[1],v[2]);
-	for (int k = 0; k < 3; k++) blade[0].vertices[k].normWS;
+	for (int k = 0; k < 3; k++) blade[0].vertices[k].normWS = bladeNormal;
 }
 
 void main() {

@@ -3,7 +3,6 @@
 in vec4 posWS;
 in vec4 normalWS;
 
-// out vec4 fragColor;
 layout(location = 0) out vec4 fragColor;
 
 uniform vec4 camPos;
@@ -49,18 +48,18 @@ float falloff(vec4 lightDir, vec4 dirToLight, float lightAngle, float lightPenum
 vec4 calculateColor(vec4 lightDir, vec4 camDir, vec4 normWS) {
 	vec4 con = vec4(0);
 	float difMult = saturate(dot(normWS, -lightDir));
-	con += vec4(1) * kd * difMult;
+	con += diffuse * kd * difMult;
 
 	vec4 R = reflect(lightDir, normWS);
 	float specMult = saturate(dot(R, camDir));
-	con += ks * vec4(1) * (shininess > 0 ? pow(specMult, shininess) : specMult);
+	con += ks * specular * (shininess > 0 ? pow(specMult, shininess) : specMult);
 
 	return con;
 }
 
 void main() {
 	// fragColor = vec4(1);
-	// fragColor = ka * vec4(1);
+	// fragColor = ka * ambient;
 
 	// vec4 positionWS = vec4(vec3(posWS), 1);
 
@@ -87,10 +86,7 @@ void main() {
 	// 		spotLights[i].angle, spotLights[i].penumbra);
 	// 	fragColor += calculateColor(lightIncident, camDir, normWS) * spotLights[i].color * att;
 	// }
+	fragColor = (normalize(normalWS)+1)/2;
 
-	fragColor = vec4(1);
-	// fragColor = (normalize(normalWS)+1)/2;
-	// fragColor = (normalWS+1)/2;
-	// fragColor = fragColor != vec4(0,0,0,0) ? vec4(1) : vec4(0);
 	fragColor.a = 1;
 }
