@@ -34,7 +34,7 @@ void MainWindow::createCheckbox(QVBoxLayout *&layout, QCheckBox *&checkbox, std:
 }
 
 void MainWindow::createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *&spinBox,
-							  int tickInterval, int minimum, int maximum, int defaultValue)
+                              int tickInterval, int minimum, int maximum, int defaultValue, int &syncedValue)
 {
 	slider = new QSlider(Qt::Orientation::Horizontal);
 	slider->setTickInterval(tickInterval);
@@ -43,9 +43,9 @@ void MainWindow::createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *
 	slider->setValue(defaultValue);
 
 	spinBox = new QSpinBox();
-	spinBox->setMinimum(tickInterval);
-	spinBox->setMaximum(minimum);
-	spinBox->setSingleStep(maximum);
+	spinBox->setMinimum(minimum);
+	spinBox->setMaximum(maximum);
+	spinBox->setSingleStep(tickInterval);
 	spinBox->setValue(defaultValue);
 
 	QGroupBox *groupBox = new QGroupBox(); // horizonal slider 2 alignment
@@ -56,13 +56,24 @@ void MainWindow::createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *
 	groupBox->setLayout(boxLayout);
 
 	layout->addWidget(groupBox);
+
+    auto onValueChangeWrapper = [&](int newValue) {
+		slider->setValue(newValue);
+		spinBox->setValue(newValue);
+		syncedValue = newValue;
+		realtime->settingsChanged();
+	};
+
+    connect(slider, &QSlider::valueChanged, this, onValueChangeWrapper);
+	connect(spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+			this, onValueChangeWrapper);
+	syncedValue = defaultValue;
 }
 
 void MainWindow::createSliderDouble(QVBoxLayout *&layout, QSlider *&slider, QDoubleSpinBox *&spinBox,
-									int tickIntervalSlider, int minimumSlider, int maximumSlider, int defaultValueSlider,
-									float tickInterval, float minimum, float maximum, float defaultValue)
+                                    int tickIntervalSlider, int minimumSlider, int maximumSlider, int defaultValueSlider,
+                                    float tickInterval, float minimum, float maximum, float defaultValue, float &syncedValue)
 {
-
 	slider = new QSlider(Qt::Orientation::Horizontal);
 	slider->setTickInterval(tickIntervalSlider);
 	slider->setMinimum(minimumSlider);
@@ -70,9 +81,9 @@ void MainWindow::createSliderDouble(QVBoxLayout *&layout, QSlider *&slider, QDou
 	slider->setValue(defaultValueSlider);
 
 	spinBox = new QDoubleSpinBox();
-	spinBox->setMinimum(tickInterval);
-	spinBox->setMaximum(minimum);
-	spinBox->setSingleStep(maximum);
+	spinBox->setMinimum(minimum);
+	spinBox->setMaximum(maximum);
+	spinBox->setSingleStep(tickInterval);
 	spinBox->setValue(defaultValue);
 
 	QGroupBox *groupBox = new QGroupBox(); // horizonal slider 2 alignment
@@ -83,6 +94,30 @@ void MainWindow::createSliderDouble(QVBoxLayout *&layout, QSlider *&slider, QDou
 	groupBox->setLayout(boxLayout);
 
 	layout->addWidget(groupBox);
+
+    auto onValueChangeWrapperSlider = [&](int newValue) {
+		// inverse lerp 
+        float fValue = float(newValue - slider->minimum()) / (slider->maximum() - slider->minimum()) *
+            (spinBox->maximum() - spinBox->minimum()) + spinBox->minimum();
+		slider->setValue(newValue);
+		spinBox->setValue(fValue);
+		syncedValue = fValue;
+		realtime->settingsChanged();
+	};
+
+    auto onValueChangeWrapper = [&](double newValue) {
+        int iValue = round(float(newValue - spinBox->minimum()) / (spinBox->maximum() - spinBox->minimum()) *
+            (slider->maximum() -slider->minimum())) +slider->minimum();
+		slider->setValue(iValue);
+		spinBox->setValue(newValue);
+		syncedValue = newValue;
+		realtime->settingsChanged();
+	};
+
+	connect(slider, &QSlider::valueChanged, this, onValueChangeWrapperSlider);
+	connect(spinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+			this, onValueChangeWrapper);
+	syncedValue = defaultValue;
 }
 
 void MainWindow::initialize()
@@ -100,58 +135,22 @@ void MainWindow::initialize()
 	createLabel(vLayout, "Near Plane");
 	createSliderDouble(vLayout, nearSlider, nearBox,
 					   1, 1, 1000, 10,
-					   0.01f, 10.0f, 0.1f, 0.1f);
+					   0.1f, 0.1f, 10.0f, 0.1f, settings.nearPlane);
 	createLabel(vLayout, "Far Plane");
 	createSliderDouble(vLayout, farSlider, farBox,
 					   1, 1000, 10000, 10000,
-					   10.0f, 100.0f, 0.1f, 100.0f);
+					   0.1f, 10.0f, 100.0f, 100.0f, settings.farPlane);
+	createLabel(vLayout, "Grass", true);
+	createLabel(vLayout, "Blade Count X");
+	createSlider(vLayout, bladeCntXSlider, bladeCntXBox, 1, 1, 150, 150, settings.bladeCntX);
+	createLabel(vLayout, "Blade Count Z");
+	createSlider(vLayout, bladeCntZSlider, bladeCntZBox, 1, 1, 150, 150, settings.bladeCntZ);
 
-	connect(nearSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeNearSlider);
-	connect(nearBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-			this, &MainWindow::onValChangeNearBox);
-
-	connect(farSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeFarSlider);
-	connect(farBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-			this, &MainWindow::onValChangeFarBox);
-
-	onValChangeNearBox(0.1f);
-	onValChangeFarBox(100.f);
+	realtime->settingsChanged();
 }
 
 void MainWindow::finish()
 {
 	realtime->finish();
 	delete (realtime);
-}
-
-void MainWindow::onValChangeNearSlider(int newValue)
-{
-	// nearSlider->setValue(newValue);
-	nearBox->setValue(newValue / 100.f);
-	settings.nearPlane = nearBox->value();
-	realtime->settingsChanged();
-}
-
-void MainWindow::onValChangeFarSlider(int newValue)
-{
-	// farSlider->setValue(newValue);
-	farBox->setValue(newValue / 100.f);
-	settings.farPlane = farBox->value();
-	realtime->settingsChanged();
-}
-
-void MainWindow::onValChangeNearBox(double newValue)
-{
-	nearSlider->setValue(int(newValue * 100.f));
-	// nearBox->setValue(newValue);
-	settings.nearPlane = nearBox->value();
-	realtime->settingsChanged();
-}
-
-void MainWindow::onValChangeFarBox(double newValue)
-{
-	farSlider->setValue(int(newValue * 100.f));
-	// farBox->setValue(newValue);
-	settings.farPlane = farBox->value();
-	realtime->settingsChanged();
 }

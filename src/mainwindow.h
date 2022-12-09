@@ -23,21 +23,21 @@ private:
 	void createCheckbox(QVBoxLayout *&layout, QCheckBox *&checkbox, std::string text, bool defaultValue);
 
 	void createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *&spinBox, 
-        int tickInterval, int minimum, int maximum, int defaultValue);
+        int tickInterval, int minimum, int maximum, int defaultValue, int &syncedValue);	
 
 	void createSliderDouble(QVBoxLayout *&layout, QSlider *&slider, QDoubleSpinBox *&spinBox, 
 		int tickIntervalSlider, int minimumSlider, int maximumSlider, int defaultValueSlider,
-        float tickfloaterval, float minimum, float maximum, float defaultValue);
+        float tickfloaterval, float minimum, float maximum, float defaultValue, float &syncedValue);
 
     Realtime *realtime;
+
+	QSlider *bladeCntXSlider;
+	QSlider *bladeCntZSlider;
+	QSpinBox *bladeCntXBox;
+	QSpinBox *bladeCntZBox;
+
     QSlider *nearSlider;
     QSlider *farSlider;
     QDoubleSpinBox *nearBox;
     QDoubleSpinBox *farBox;
-
-private slots:
-    void onValChangeNearSlider(int newValue);
-    void onValChangeFarSlider(int newValue);
-    void onValChangeNearBox(double newValue);
-    void onValChangeFarBox(double newValue);
 };
