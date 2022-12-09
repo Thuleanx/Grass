@@ -1,10 +1,5 @@
 #version 430
-layout(local_size_x = 1, local_size_y = 1, local_size_z=1) in;
-
-struct SourceVertex {
-	vec3 posOS;
-	float padding0;
-};
+layout(local_size_x = 8, local_size_y = 1, local_size_z=4) in;
 
 struct DrawVertex {
 	vec3 posWS;
@@ -17,61 +12,53 @@ struct DrawTriangle {
 	DrawVertex vertices[3];
 };
 
-layout(std430, binding=0) readonly buffer SourceVertices
-{
-	SourceVertex vertices[];
-};
-
-layout(std430, binding=1) buffer DrawTriangles
+layout(std430, binding=0) buffer DrawTriangles
 {
 	DrawTriangle triangles[];
 };
 
-uniform float GrassHeight;
-uniform float GrassBaseDistance;
-uniform int numTriangles;
+uniform int bladeCntX;
+uniform int bladeCntZ;
+uniform float bladeWidth;
+uniform float bladeHeight;
+uniform vec2 density;
 
-// vertices defined in counterclockwise order, please
 vec3 triangleNormal(vec3 p0, vec3 p1, vec3 p2) {
 	return normalize(cross(p1-p0, p2-p0));
 }
 
-void constructAndSetTriangle(int loc, vec3 v0, vec3 v1, vec3 v2) {
-	vec3 normalWS = triangleNormal(v0, v1, v2);
+void createBlade(
+	in vec3 posWS,
+	out DrawTriangle blade[1]) {
 
-	DrawTriangle tri;
-	tri.vertices[0].posWS = v0;
-	tri.vertices[1].posWS = v1;
-	tri.vertices[2].posWS = v2;
-	for (int k = 0; k < 3; k++)
-		tri.vertices[k].normWS = normalWS;
-	triangles[loc] = tri;
+	vec3 normal = vec3(0,1,0);
+	vec3 tangent = vec3(1,0,0);
+	vec3 bitangent = vec3(0,0,1);
+
+	vec3 v[3] = vec3[3](
+		posWS - tangent * bladeWidth,
+		posWS + tangent * bladeWidth,
+		posWS + normal * bladeHeight
+	);
+
+	blade[0].vertices[0].posWS = v[0];
+	blade[0].vertices[1].posWS = v[1];
+	blade[0].vertices[2].posWS = v[2];
+
+	vec3 bladeNormal = triangleNormal(v[0],v[1],v[2]);
+	for (int k = 0; k < 3; k++) blade[0].vertices[k].normWS;
 }
 
 void main() {
-	if (numTriangles< int(gl_GlobalInvocationID.x)) return;
+	if (int(gl_GlobalInvocationID.x) >= 2*bladeCntX + 1) return;
+	if (int(gl_GlobalInvocationID.y) > 0) return;
+	if (int(gl_GlobalInvocationID.z) >= 2*bladeCntZ + 1) return;
 
-	int j = int(gl_GlobalInvocationID.x);
-	int i = int(gl_GlobalInvocationID.x)/3*3; // vertex you center on
+	vec3 posWS = (vec3(gl_GlobalInvocationID.xyz) - vec3(bladeCntX, 0, bladeCntZ)) ; //* vec3(1.00/density.x,0,1.00/density.y)
 
-	vec3 inputs[3];
-	for (int k = 0; k < 3; k++)
-		inputs[k] = vertices[k + i].posOS;
-	vec3 normalBase = triangleNormal(inputs[0], inputs[1], inputs[2]);
+	int id = int(int(gl_GlobalInvocationID.x) * (2*bladeCntZ+1)) + int(gl_GlobalInvocationID.z);
 
-	vec3 center = vertices[j].posOS + GrassHeight * normalBase;
-
-	vec3 tangent = normalize(inputs[1] - inputs[0]);
-	vec3 bitangent = cross(tangent, normalBase);
-
-	for (int k = 0; k < 3; k++) {
-		float angle = 2.00 * float(k) *  3.14159265359 / 3;
-		inputs[k] = vertices[j].posOS + tangent * sin(angle) * GrassBaseDistance + 
-			bitangent * cos(angle) * GrassBaseDistance;
-	}
-
-	// constructAndSetTriangle(i/3, inputs[0], inputs[1], inputs[2]);
-	constructAndSetTriangle(3*j, inputs[0], inputs[1], center);
-	constructAndSetTriangle(3*j+1, inputs[1], inputs[2], center);
-	constructAndSetTriangle(3*j+2, inputs[2], inputs[0], center);
+	DrawTriangle blade[1];
+	createBlade(posWS, blade);
+	triangles[id] = blade[0];
 }

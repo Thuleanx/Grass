@@ -14,7 +14,7 @@
 using namespace std;
 using namespace glm;
 
-void Realtime::t_calculateVAOVBO() {
+//void Realtime::t_calculateVAOVBO() {
 	// glBindVertexArray(vao);
 	// glBindBuffer(GL_ARRAY_BUFFER,vbo);
 
@@ -61,18 +61,18 @@ void Realtime::t_calculateVAOVBO() {
 
 	// glBindVertexArray(0);
 	// glBindBuffer(GL_ARRAY_BUFFER,0);
-}
+//}
 
-void Realtime::t_loadScene() {
-	// glClearColor(0,0,1,1);
-    if (settings.sceneFilePath.length() > 0) {
-		bool success = SceneParser::parse(settings.sceneFilePath, t_renderData);
-		if (!success)
-			std::cerr << "Error loading scene: \"" << settings.sceneFilePath << "\"" << std::endl;
-		else {
-			t_camera = Camera(size().width(), size().height(), t_renderData.cameraData);
-			t_calculateVAOVBO();
-			t_recalculateVAO = false;
-		}
-	}
-}
+// void Realtime::t_loadScene() {
+// 	// glClearColor(0,0,1,1);
+//     if (settings.sceneFilePath.length() > 0) {
+// 		bool success = SceneParser::parse(settings.sceneFilePath, t_renderData);
+// 		if (!success)
+// 			std::cerr << "Error loading scene: \"" << settings.sceneFilePath << "\"" << std::endl;
+// 		else {
+// 			t_camera = Camera(size().width(), size().height(), t_renderData.cameraData);
+// 			t_calculateVAOVBO();
+// 			t_recalculateVAO = false;
+// 		}
+// 	}
+// }

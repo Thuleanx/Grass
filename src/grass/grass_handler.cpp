@@ -5,7 +5,58 @@
 using namespace glm;
 using namespace std;
 
-void GrassHandler::awake() {
+void GrassHandler::initShaders() {
+	shader_default.initializeProgram();
+	shader_default.attachShader(GL_VERTEX_SHADER, ":/resources/shaders/grass.vert");
+	shader_default.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/grass.frag");
+	shader_default.finalizeProgram();
+
+	shader_compute_grass.initializeProgram();
+	shader_compute_grass.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/grassGenerate.compute");
+	shader_compute_grass.finalizeProgram();
+}
+
+void GrassHandler::initVAOVBO() {
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vertexDataBuffer);
+}
+
+void GrassHandler::generateGrass() {
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexDataBuffer);
+
+	shader_compute_grass.useProgram();
+
+	int numBlades = numGrassBlades();
+	cout << numBlades << endl;
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexDataBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade * 3 * 
+		numBlades, nullptr, GL_STATIC_DRAW);
+
+	shader_compute_grass.setInt("bladeCntX", bladeCntX);
+	shader_compute_grass.setInt("bladeCntZ", bladeCntZ);
+	shader_compute_grass.setFloat("bladeWidth", bladeWidth);
+	shader_compute_grass.setFloat("bladeHeight", bladeHeight);
+	shader_compute_grass.setVec2("density", vec2(density, density));
+
+	glDispatchCompute(2*bladeCntX+1, 1, 2*bladeCntZ+1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+
+	shader_compute_grass.detach();
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, reinterpret_cast<void*>(0));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void GrassHandler::awake(RenderData &renderData) {
     Blit::initialize();
 
 	int work_grp_cnt[3];
@@ -28,14 +79,11 @@ void GrassHandler::awake() {
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
 	printf("max local work group invocations %i\n", work_grp_inv);
 
-	shader_default.initializeProgram();
-	shader_default.attachShader(GL_VERTEX_SHADER, ":/resources/shaders/grass.vert");
-	shader_default.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/grass.frag");
-	shader_default.finalizeProgram();
-
-	shader_compute_grass.initializeProgram();
-	shader_compute_grass.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/grassGenerate.compute");
-	shader_compute_grass.finalizeProgram();
+	initShaders();
+	initVAOVBO();
+	generateGrass();
+	loadGrassData(shader_default);
+	loadLightData(shader_default, renderData);
 }
 
 void GrassHandler::onResize(int screen_width, int screen_height, 
@@ -47,69 +95,39 @@ void GrassHandler::onResize(int screen_width, int screen_height,
 	this->fbo_height = fbo_height;
 }
 
+GLenum errorCheck()
+{
+	GLenum code;
+	const GLubyte *string;
+	code = glGetError();
+	if (code != GL_NO_ERROR)
+	{
+		string = gluErrorString(code);
+		fprintf(stderr, "OpenGL error: %s\n", string);
+	}
+	return code;
+}
+
 void GrassHandler::update(Camera &camera) {
+	glViewport(0, 0, screen_width, screen_height);
+	fbo_main.use();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shader_default.useProgram();
+	loadCameraData(shader_default, camera);
+
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades());
+	glBindVertexArray(0);
+	errorCheck();
+
+	shader_default.detach();
+	fbo_main.detach();
 }
 
 void GrassHandler::onDestroy() {
 	Blit::destroy();
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vertexDataBuffer);
 	shader_default.destroy();
 	shader_compute_grass.destroy();
-}
-
-void GrassHandler::loadCameraData(const ShaderProgram &shader, Camera &camera) {
-	shader.setVec4("camPos", camera.getPosition());
-	shader.setMat4("viewMatrix", camera.getViewMatrix());
-    shader.setMat4("projMatrix", camera.getProjectionMatrix());
-}
-void GrassHandler::loadLightData(const ShaderProgram &shader, RenderData &renderData) {
-	shader.setFloat("ka", renderData.globalData.ka);
-	shader.setFloat("kd", renderData.globalData.kd);
-	shader.setFloat("ks", renderData.globalData.ks);
-
-	int lightIndex[3] = {0,0,0};
-	auto processLight = [&](LightType t, vec4 &pos, vec3 &function, vec4& dir, vec4 &color, float penumbra, float angle) {
-		pos[3] = 1;
-		dir[3] = 0;
-
-		string prefixLightType = "";
-		int i = lightIndex[(int) t];
-		if (t == LightType::LIGHT_POINT) prefixLightType = "point";
-		if (t == LightType::LIGHT_DIRECTIONAL) prefixLightType = "dir";
-		if (t == LightType::LIGHT_SPOT) prefixLightType = "spot";
-
-		if (t == LightType::LIGHT_SPOT || t == LightType::LIGHT_POINT) 
-            shader.setVec4(prefixLightType + "Lights[" + to_string(i) + "].pos", pos);
-		if (t == LightType::LIGHT_DIRECTIONAL || t == LightType::LIGHT_SPOT)
-			shader.setVec4(prefixLightType + "Lights[" + to_string(i) + "].dir", dir);
-		if (t == LightType::LIGHT_POINT || t == LightType::LIGHT_SPOT)
-			shader.setVec3(prefixLightType + "Lights[" + to_string(i) + "].function", function);
-		if (t == LightType::LIGHT_SPOT) shader.setFloat(prefixLightType + "Lights[" + to_string(i) + "].penumbra", penumbra);
-		if (t == LightType::LIGHT_SPOT) {
-			shader.setFloat(prefixLightType + "Lights[" + to_string(i) + "].angle",angle);
-		}
-        {
-			shader.setVec4(prefixLightType + "Lights[" + to_string(i) + "].color", color);
-        }
-		lightIndex[(int) t]++;
-	};
-    f(i,0,renderData.lights.size()) {
-        if (lightIndex[(int) renderData.lights[i].type] < 8) {
-			processLight(renderData.lights[i].type, 
-				renderData.lights[i].pos,
-                renderData.lights[i].function,
-                renderData.lights[i].dir,
-				renderData.lights[i].color,
-				renderData.lights[i].penumbra,
-				renderData.lights[i].angle
-			);
-		}
-	}
-	f(t,0,3) while (lightIndex[t] < 8) {
-		vec4 zero(0);
-		vec4 zeroPos(0,0,0,1);
-		vec3 zero3(0);
-        processLight((LightType) t,
-			zeroPos, zero3, zero, zero, 1, 1
-		);
-	}
 }

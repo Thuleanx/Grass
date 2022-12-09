@@ -20,6 +20,7 @@ public:
 
 	void setFloat(std::string variableName, float value) const;
 	void setInt(std::string variableName, int value) const;
+	void setVec2(std::string variableName, glm::vec2 value) const;
 	void setVec3(std::string variableName, glm::vec3 value) const;
 	void setVec4(std::string variableName, glm::vec4 value) const;
 	void setMat4(std::string variableName, glm::mat4 value) const;

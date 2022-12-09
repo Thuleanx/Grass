@@ -55,6 +55,7 @@ GLuint ShaderProgram::getShaderLoc(string variableName) const { return glGetUnif
 
 void ShaderProgram::setFloat(string varName, float value) const { glUniform1f(getShaderLoc(varName), value); }
 void ShaderProgram::setInt(string varName, int value) const { glUniform1i(getShaderLoc(varName), value); }
+void ShaderProgram::setVec2(string varName, glm::vec2 value) const { glUniform2fv(getShaderLoc(varName), 1, glm::value_ptr( value)); } 
 void ShaderProgram::setVec3(string varName, glm::vec3 value) const { glUniform3fv(getShaderLoc(varName), 1, glm::value_ptr( value)); } 
 void ShaderProgram::setVec4(string varName, glm::vec4 value) const { glUniform4fv(getShaderLoc(varName), 1, glm::value_ptr(value)); }
 void ShaderProgram::setMat4(string varName, glm::mat4 value) const { glUniformMatrix4fv(getShaderLoc(varName), 1, GL_FALSE, glm::value_ptr( value ));}

@@ -35,7 +35,7 @@ void Realtime::finish() {
     this->makeCurrent();
 
     // Students: anything requiring OpenGL calls when the program exits should be done here
-    //a_deleteOpenGLVars();
+	grass.onDestroy();
 
     this->doneCurrent();
 }
@@ -58,26 +58,23 @@ void Realtime::initializeGL() {
     // Allows OpenGL to draw objects appropriately on top of one another
     glEnable(GL_DEPTH_TEST);
    // Tells OpenGL to only draw the front face
-    glEnable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE); we want to draw the back face as well
     // Tells OpenGL how big the screen is
     glViewport(0, 0, size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio);
 
-	m_fbo_height = size().height();
-	m_fbo_width = size().width();
+	// load scene
+	bool success = SceneParser::parse(":/resources/sceneFiles/default.xml", t_renderData);
+	if (!success)
+        std::cerr << "Error loading scene: \"" << ":/resources/sceneFiles/default.xml" << "\"" << std::endl;
+	else {
+        t_camera = Camera(size().width(), size().height(), t_renderData.cameraData);
+	}
 
-
-    //a_pipelineInit();
-    Blit::initialize();
+    grass.awake(t_renderData);
 }
 
 void Realtime::paintGL() {
-    // Students: anything requiring OpenGL calls every frame should be done here
-    if (t_reloadscene) t_loadScene();
-	t_reloadscene = false;
-    if (t_recalculateVAO) t_calculateVAOVBO();
-	t_recalculateVAO = false;
-
-    // a_pipelineRun();
+	grass.update(t_camera);
 }
 
 void Realtime::resizeGL(int w, int h) {
@@ -87,21 +84,16 @@ void Realtime::resizeGL(int w, int h) {
     // Students: anything requiring OpenGL calls when the program starts should be done here
 	t_camera.setSize(w,h);
 
-	m_fbo_height = size().height();
-	m_fbo_width = size().width();
-
-	// a_deleteFBOandTextures();
-	// a_initFBOs();
+	grass.onResize(size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio, 
+		size().width(), size().height());
 }
 
 void Realtime::sceneChanged() {
-	t_reloadscene = true;
     update(); // asks for a PaintGL() call to occur
 }
 
 void Realtime::settingsChanged() {
-	t_recalculateVAO = true;
-	t_camera.recalculateProj();
+    t_camera.recalculateProj();
 
     update(); // asks for a PaintGL() call to occur
 }

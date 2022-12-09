@@ -27,6 +27,7 @@ include_directories(src)
 add_executable(${PROJECT_NAME}
     src/main.cpp
 
+    src/grass/grass_handler_loader.cpp
     src/grass/grass_handler.cpp
     src/grass/grass_handler.h
     src/t_utils/ShaderProgram.h
@@ -97,6 +98,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/grassGenerate.compute
         resources/shaders/grass.frag
         resources/shaders/grass.vert
+        resources/sceneFiles/default.xml
 )
 
 # GLEW: this provides support for Windows (including 64-bit)

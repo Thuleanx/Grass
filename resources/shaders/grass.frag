@@ -12,9 +12,9 @@ uniform float ka;
 uniform float kd;
 uniform float ks;
 
-uniform vec4 ambient;
-uniform vec4 diffuse;
-uniform vec4 specular;
+uniform vec4 ambient = vec4(1,1,1,1);
+uniform vec4 diffuse = vec4(1,1,1,1);
+uniform vec4 specular = vec4(1,1,1,1);
 
 uniform float shininess;
 
@@ -59,33 +59,34 @@ vec4 calculateColor(vec4 lightDir, vec4 camDir, vec4 normWS) {
 }
 
 void main() {
-	fragColor = ka * ambient;
+	fragColor = vec4(1);
+	// fragColor = ka * ambient;
 
-	vec4 positionWS = vec4(vec3(posWS), 1);
+	// vec4 positionWS = vec4(vec3(posWS), 1);
 
-	vec4 camDir = normalize(camPos - positionWS);
-	vec4 normWS = normalize(normalWS);
+	// vec4 camDir = normalize(camPos - positionWS);
+	// vec4 normWS = normalize(normalWS);
 
-	// dirLight
-	for (int i = 0; i < 8; i++) {
-		vec4 lightDir = normalize(dirLights[i].dir);
-		fragColor += calculateColor(lightDir, camDir, normWS) * dirLights[i].color;
-	}
-	// pointLight
-	for (int i = 0; i < 8; i++) {
-		vec4 lightDir = -normalize(pointLights[i].pos - positionWS);
-		float dist = length(vec3(pointLights[i].pos) - vec3(positionWS));
-		float att = attenuation(pointLights[i].function, dist);
-		fragColor += calculateColor(lightDir, camDir, normWS) * pointLights[i].color * att;
-	}
-	// spotLight
-	for (int i = 0; i < 8; i++) {
-		vec4 lightIncident = -normalize(spotLights[i].pos - positionWS);
-		float dist = length(vec3(spotLights[i].pos) - vec3(positionWS));
-		float att = attenuation(spotLights[i].function, dist) * falloff(-lightIncident, normalize(spotLights[i].dir), 
-			spotLights[i].angle, spotLights[i].penumbra);
-		fragColor += calculateColor(lightIncident, camDir, normWS) * spotLights[i].color * att;
-	}
+	// // dirLight
+	// for (int i = 0; i < 8; i++) {
+	// 	vec4 lightDir = normalize(dirLights[i].dir);
+	// 	fragColor += calculateColor(lightDir, camDir, normWS) * dirLights[i].color;
+	// }
+	// // pointLight
+	// for (int i = 0; i < 8; i++) {
+	// 	vec4 lightDir = -normalize(pointLights[i].pos - positionWS);
+	// 	float dist = length(vec3(pointLights[i].pos) - vec3(positionWS));
+	// 	float att = attenuation(pointLights[i].function, dist);
+	// 	fragColor += calculateColor(lightDir, camDir, normWS) * pointLights[i].color * att;
+	// }
+	// // spotLight
+	// for (int i = 0; i < 8; i++) {
+	// 	vec4 lightIncident = -normalize(spotLights[i].pos - positionWS);
+	// 	float dist = length(vec3(spotLights[i].pos) - vec3(positionWS));
+	// 	float att = attenuation(spotLights[i].function, dist) * falloff(-lightIncident, normalize(spotLights[i].dir), 
+	// 		spotLights[i].angle, spotLights[i].penumbra);
+	// 	fragColor += calculateColor(lightIncident, camDir, normWS) * spotLights[i].color * att;
+	// }
 
-	fragColor.a = 1;
+	// fragColor.a = 1;
 }

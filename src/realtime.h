@@ -17,8 +17,7 @@
 #include "utils/sceneparser.h"
 #include "shapes/iShape.h"
 #include "camera/camera.h"
-#include "t_utils/Framebuffer.h"
-#include "t_utils/ShaderProgram.h"
+#include "grass/grass_handler.h"
 
 class Realtime : public QOpenGLWidget
 {
@@ -55,25 +54,8 @@ private:
 
     // Device Correction Variables
     int m_devicePixelRatio;
-	int m_fbo_width;
-	int m_fbo_height;
 
-    std::string t_fileLoaded;
+	GrassHandler grass;
     RenderData t_renderData;
     Camera t_camera;
-
-	bool t_recalculateVAO = false;
-	bool t_reloadscene = false;
-
-    void t_loadScene();
-	void t_calculateVAOVBO();
-
-	// void a_deleteOpenGLVars();
-	// void a_deleteFBOandTextures();
-
-	// void a_loadSceneGlobalData(const ShaderProgram &shader);
-	// void a_loadCameraData(const ShaderProgram &shader);
-	// void a_loadLightData(const ShaderProgram &shader);
-
-	// void a_pipelineRun();
 };
