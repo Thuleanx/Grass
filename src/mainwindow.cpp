@@ -43,8 +43,26 @@ void MainWindow::initialize() {
     near_label->setText("Near Plane:");
     QLabel *far_label = new QLabel(); // Far plane label
     far_label->setText("Far Plane:");
+	QLabel *numTriangles_label = new QLabel();
+    numTriangles_label->setText("Num Triangles:");
 
+	numTrianglesSlider = new QSlider(Qt::Orientation::Horizontal);
+    numTrianglesSlider->setTickInterval(1);
+    numTrianglesSlider->setMinimum(1);
+    numTrianglesSlider->setMaximum(25);
+    numTrianglesSlider->setValue(1);
 
+    numTrianglesBox = new QSpinBox();
+    numTrianglesBox->setMinimum(1);
+    numTrianglesBox->setMaximum(25);
+    numTrianglesBox->setSingleStep(1);
+    numTrianglesBox->setValue(1);
+
+    QGroupBox *numTrianglesBoxGroup = new QGroupBox(); // horizonal near slider alignment
+    QHBoxLayout *numTrianglesLayout = new QHBoxLayout();
+	numTrianglesLayout->addWidget(numTrianglesSlider);
+	numTrianglesLayout->addWidget(numTrianglesBox);
+	numTrianglesBoxGroup->setLayout(numTrianglesLayout);
 
     // Create checkbox for per-pixel filter
     filter1 = new QCheckBox();
@@ -55,10 +73,6 @@ void MainWindow::initialize() {
     filter2 = new QCheckBox();
     filter2->setText(QStringLiteral("Kernel-Based Filter"));
     filter2->setChecked(false);
-
-    // Create file uploader for scene file
-    uploadFile = new QPushButton();
-    uploadFile->setText(QStringLiteral("Upload Scene File"));
 
     // Creates the boxes containing the parameter sliders and number boxes
     QGroupBox *p1Layout = new QGroupBox(); // horizonal slider 1 alignment
@@ -157,8 +171,9 @@ void MainWindow::initialize() {
     ec4->setText(QStringLiteral("Extra Credit 4"));
     ec4->setChecked(false);
 
-    vLayout->addWidget(uploadFile);
     vLayout->addWidget(tesselation_label);
+	vLayout->addWidget(numTriangles_label);
+    vLayout->addWidget(numTrianglesBoxGroup);
     vLayout->addWidget(param1_label);
     vLayout->addWidget(p1Layout);
     vLayout->addWidget(param2_label);
@@ -186,7 +201,7 @@ void MainWindow::initialize() {
 
     // Set default values for near and far planes
     onValChangeNearBox(0.1f);
-    onValChangeFarBox(10.f);
+    onValChangeFarBox(100.f);
 }
 
 void MainWindow::finish() {
@@ -197,12 +212,18 @@ void MainWindow::finish() {
 void MainWindow::connectUIElements() {
     connectPerPixelFilter();
     connectKernelBasedFilter();
-    connectUploadFile();
     connectParam1();
     connectParam2();
     connectNear();
     connectFar();
     connectExtraCredit();
+	connectNumTrianglesSlider();
+}
+
+void MainWindow::connectNumTrianglesSlider() {
+    connect(numTrianglesSlider, &QSlider::valueChanged, this, &MainWindow::onValChangeNumTriangles);
+    connect(numTrianglesBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &MainWindow::onValChangeNumTriangles);
 }
 
 void MainWindow::connectPerPixelFilter() {
@@ -211,10 +232,6 @@ void MainWindow::connectPerPixelFilter() {
 
 void MainWindow::connectKernelBasedFilter() {
     connect(filter2, &QCheckBox::clicked, this, &MainWindow::onKernelBasedFilter);
-}
-
-void MainWindow::connectUploadFile() {
-    connect(uploadFile, &QPushButton::clicked, this, &MainWindow::onUploadFile);
 }
 
 void MainWindow::connectParam1() {
@@ -257,22 +274,6 @@ void MainWindow::onKernelBasedFilter() {
     settings.kernelBasedFilter = !settings.kernelBasedFilter;
     realtime->settingsChanged();
 }
-
-void MainWindow::onUploadFile() {
-    // Get abs path of scene file
-    QString configFilePath = QFileDialog::getOpenFileName(this, tr("Upload File"), QDir::homePath(), tr("Scene Files (*.xml)"));
-    if (configFilePath.isNull()) {
-        std::cout << "Failed to load null scenefile." << std::endl;
-        return;
-    }
-
-    settings.sceneFilePath = configFilePath.toStdString();
-
-    std::cout << "Loaded scenefile: \"" << configFilePath.toStdString() << "\"." << std::endl;
-
-    realtime->sceneChanged();
-}
-
 
 void MainWindow::onValChangeP1(int newValue) {
     p1Slider->setValue(newValue);
@@ -336,4 +337,11 @@ void MainWindow::onExtraCredit3() {
 void MainWindow::onExtraCredit4() {
     settings.extraCredit4 = !settings.extraCredit4;
     realtime->settingsChanged();
+}
+
+void MainWindow::onValChangeNumTriangles(int value) {
+    numTrianglesBox->setValue(value);
+    numTrianglesSlider->setValue(value);
+	settings.numTriangles = value;
+	realtime->settingsChanged();
 }

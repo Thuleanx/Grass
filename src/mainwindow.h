@@ -24,13 +24,14 @@ private:
     void connectFar();
     void connectPerPixelFilter();
     void connectKernelBasedFilter();
-    void connectUploadFile();
     void connectExtraCredit();
+	void connectNumTrianglesSlider();
 
     Realtime *realtime;
     QCheckBox *filter1;
     QCheckBox *filter2;
-    QPushButton *uploadFile;
+    QSlider *numTrianglesSlider;
+    QSpinBox *numTrianglesBox;
     QSlider *p1Slider;
     QSlider *p2Slider;
     QSpinBox *p1Box;
@@ -49,9 +50,9 @@ private:
 private slots:
     void onPerPixelFilter();
     void onKernelBasedFilter();
-    void onUploadFile();
     void onValChangeP1(int newValue);
     void onValChangeP2(int newValue);
+    void onValChangeNumTriangles(int newValue);
     void onValChangeNearSlider(int newValue);
     void onValChangeFarSlider(int newValue);
     void onValChangeNearBox(double newValue);

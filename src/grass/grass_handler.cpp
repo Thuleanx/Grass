@@ -39,18 +39,22 @@ void GrassHandler::generateGrass() {
 	shader_compute_grass.setFloat("bladeHeight", bladeHeight);
 	shader_compute_grass.setVec2("density", vec2(density, density));
 
-	glDispatchCompute(2*bladeCntX+1, 1, 2*bladeCntZ+1);
+	glDispatchCompute(
+		ceil((2*bladeCntX+1) / workGroupSz.x), 
+		ceil(1/workGroupSz.y), 
+		ceil((2*bladeCntZ+1) / workGroupSz.z));
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
 	shader_compute_grass.detach();
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, reinterpret_cast<void*>(0));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
+		sizeof(GLfloat) * 8, reinterpret_cast<void*>(0));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
+		sizeof(GLfloat) * 8, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
@@ -116,7 +120,7 @@ void GrassHandler::update(Camera &camera) {
 	loadCameraData(shader_default, camera);
 
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades());
+	glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades() * 3);
 	glBindVertexArray(0);
 	errorCheck();
 

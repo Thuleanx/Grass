@@ -4,7 +4,7 @@
 #include <string>
 
 struct Settings {
-    std::string sceneFilePath;
+	int numTriangles = 1;
     int shapeParameter1 = 1;
     int shapeParameter2 = 1;
     float nearPlane = 1;
