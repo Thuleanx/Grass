@@ -11,12 +11,14 @@
 #include "t_utils/Framebuffer.h"
 #include "t_utils/ShaderProgram.h"
 #include "camera/camera.h"
+#include "settings.h"
 
 class GrassHandler {
 	public: 
 		void awake(RenderData &renderData);
 		void onResize(int screen_width, int screen_height, 
 			int fbo_width, int fbo_height);
+		void onSettingsChanged();
 		void update(Camera &camera);
 		void onDestroy();
 	private:
@@ -29,20 +31,18 @@ class GrassHandler {
 		GLuint vao;
 		GLuint vertexDataBuffer;
 
-        int bladeCntX = 150, bladeCntZ = 150;
-        float density = 20;
 		float bladeWidth = 0.05f;
 		float bladeHeight = 1.0f;
 		const int vertexOutputSizeBytes = 8;
 		const int trianglesPerBlade = 1;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
 
-        int numGrassBlades() { return (bladeCntX*2+1) * (bladeCntZ*2+1);}
+        int numGrassBlades() { return (settings.bladeCnt*2+1) * (settings.bladeCnt*2+1);}
 		void generateGrass();
 		void initShaders();
 		void initVAOVBO();
+		void destroyVAOVBO();
 
-		void loadScene(std::string fileName);
 		void loadGrassData(const ShaderProgram &shader);
 		static void loadLightData(const ShaderProgram &shader, RenderData &renderData);
 		static void loadCameraData(const ShaderProgram &shader, Camera &camera);

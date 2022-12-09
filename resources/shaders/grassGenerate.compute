@@ -51,10 +51,9 @@ void createBlade(
 
 void main() {
 	if (int(gl_GlobalInvocationID.x) >= 2*bladeCntX + 1) return;
-	if (int(gl_GlobalInvocationID.y) > 0) return;
 	if (int(gl_GlobalInvocationID.z) >= 2*bladeCntZ + 1) return;
 
-	vec3 posWS = (vec3(gl_GlobalInvocationID.xyz) - vec3(bladeCntX, 0, bladeCntZ)) ; //* vec3(1.00/density.x,0,1.00/density.y)
+	vec3 posWS = (vec3(gl_GlobalInvocationID.xyz) - vec3(bladeCntX, 0, bladeCntZ)) * vec3(1.00/density.x,0,1.00/density.y);
 
 	int id = int(int(gl_GlobalInvocationID.x) * (2*bladeCntZ+1)) + int(gl_GlobalInvocationID.z);
 

@@ -21,6 +21,11 @@ void GrassHandler::initVAOVBO() {
 	glGenBuffers(1, &vertexDataBuffer);
 }
 
+void GrassHandler::destroyVAOVBO() {
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vertexDataBuffer);
+}
+
 void GrassHandler::generateGrass() {
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexDataBuffer);
@@ -28,21 +33,20 @@ void GrassHandler::generateGrass() {
 	shader_compute_grass.useProgram();
 
 	int numBlades = numGrassBlades();
-	cout << numBlades << endl;
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexDataBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade * 3 * 
 		numBlades, nullptr, GL_STATIC_DRAW);
 
-	shader_compute_grass.setInt("bladeCntX", bladeCntX);
-	shader_compute_grass.setInt("bladeCntZ", bladeCntZ);
+	shader_compute_grass.setInt("bladeCntX", settings.bladeCnt);
+	shader_compute_grass.setInt("bladeCntZ", settings.bladeCnt);
 	shader_compute_grass.setFloat("bladeWidth", bladeWidth);
 	shader_compute_grass.setFloat("bladeHeight", bladeHeight);
-	shader_compute_grass.setVec2("density", vec2(density, density));
+	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 
 	glDispatchCompute(
-		ceil((2*bladeCntX+1) / workGroupSz.x), 
+		ceil((2*settings.bladeCnt+1) / workGroupSz.x), 
 		ceil(1/workGroupSz.y), 
-		ceil((2*bladeCntZ+1) / workGroupSz.z));
+		ceil((2*settings.bladeCnt+1) / workGroupSz.z));
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
@@ -58,6 +62,12 @@ void GrassHandler::generateGrass() {
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void GrassHandler::onSettingsChanged() {
+	destroyVAOVBO();
+	initVAOVBO();
+	generateGrass();
 }
 
 void GrassHandler::awake(RenderData &renderData) {

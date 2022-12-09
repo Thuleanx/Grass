@@ -54,6 +54,7 @@ private:
 
     // Device Correction Variables
     int m_devicePixelRatio;
+	bool settingsUpdated = false;
 
 	GrassHandler grass;
     RenderData t_renderData;

@@ -4,8 +4,7 @@
 #include <string>
 
 struct Settings {
-	int bladeCntX = 1;
-	int bladeCntZ = 1;
+	int bladeCnt = 1;
 	float density = 20;
 	float bladeWidth = 0.05f;
     float bladeHeight = 1.0f;

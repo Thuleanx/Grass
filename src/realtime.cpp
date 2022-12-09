@@ -74,6 +74,10 @@ void Realtime::initializeGL() {
 }
 
 void Realtime::paintGL() {
+	if (settingsUpdated) {
+		grass.onSettingsChanged();
+		settingsUpdated = false;
+	}
 	grass.update(t_camera);
 }
 
@@ -94,6 +98,8 @@ void Realtime::sceneChanged() {
 
 void Realtime::settingsChanged() {
     t_camera.recalculateProj();
+
+	settingsUpdated = true;
 
     update(); // asks for a PaintGL() call to occur
 }

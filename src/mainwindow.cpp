@@ -141,10 +141,12 @@ void MainWindow::initialize()
 					   1, 1000, 10000, 10000,
 					   0.1f, 10.0f, 100.0f, 100.0f, settings.farPlane);
 	createLabel(vLayout, "Grass", true);
-	createLabel(vLayout, "Blade Count X");
-	createSlider(vLayout, bladeCntXSlider, bladeCntXBox, 1, 1, 150, 150, settings.bladeCntX);
-	createLabel(vLayout, "Blade Count Z");
-	createSlider(vLayout, bladeCntZSlider, bladeCntZBox, 1, 1, 150, 150, settings.bladeCntZ);
+	createLabel(vLayout, "Blade Count");
+	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 150, 150, settings.bladeCnt);
+	createLabel(vLayout, "Density");
+	createSliderDouble(vLayout, densitySlider, densityBox,
+					   1, 1, 50, 10,
+                       0.1f, 0.1f, 5.0f, 1.0f, settings.density);
 
 	realtime->settingsChanged();
 }

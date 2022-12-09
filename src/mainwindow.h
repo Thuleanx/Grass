@@ -31,10 +31,11 @@ private:
 
     Realtime *realtime;
 
-	QSlider *bladeCntXSlider;
-	QSlider *bladeCntZSlider;
-	QSpinBox *bladeCntXBox;
-	QSpinBox *bladeCntZBox;
+	QSlider *bladeCntSlider;
+	QSpinBox *bladeCntBox;
+
+	QSlider *densitySlider;
+	QDoubleSpinBox *densityBox;
 
     QSlider *nearSlider;
     QSlider *farSlider;
