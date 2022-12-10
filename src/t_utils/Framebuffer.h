@@ -14,7 +14,7 @@ class Framebuffer {
 		Framebuffer() {}
 		Framebuffer(GLuint fbo_value) : fbo(fbo_value) {}
 		void initialize();
-		void attachTexture(const GLenum &texture, GLenum attachmentPoint, bool is2D = true);
+		void attachTexture(const GLuint &texture, GLenum attachmentPoint, bool is2D = true);
 		void finalize();
 		void use() const;
 		void detach() const;

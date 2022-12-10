@@ -22,8 +22,10 @@ class GrassHandler {
 		void update(Camera &camera);
 		void onDestroy();
 	private:
-		Framebuffer fbo_main = Framebuffer(1);
+		Framebuffer fbo_main = Framebuffer(2);
+		Framebuffer fbo_raw;
 		ShaderProgram shader_default;
+		ShaderProgram shader_postprocessing;
 		ShaderProgram shader_compute_grass;
 		int screen_width, screen_height;
 		int fbo_width, fbo_height;
@@ -31,15 +33,25 @@ class GrassHandler {
 		GLuint vao;
 		GLuint vertexDataBuffer;
 
+		GLuint default_screen;
+
 		const int vertexOutputSizeBytes = 12;
 		const int trianglesPerBlade = 1;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
 
         int numGrassBlades() { return (settings.bladeCnt*2+1) * (settings.bladeCnt*2+1);}
+
 		void generateGrass();
+
 		void initShaders();
+		void onResizeShaders();
+		void destroyShaders();
+
 		void initVAOVBO();
 		void destroyVAOVBO();
+
+		void initFramebuffers();
+		void destroyFramebuffers();
 
 		void loadGrassData(const ShaderProgram &shader);
 		static void loadLightData(const ShaderProgram &shader, RenderData &renderData);

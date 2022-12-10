@@ -27,6 +27,9 @@ include_directories(src)
 add_executable(${PROJECT_NAME}
     src/main.cpp
 
+    src/grass/grass_handler_blit.cpp
+    src/grass/grass_handler_shaders.cpp
+    src/grass/grass_handler_generation.cpp
     src/grass/grass_handler_loader.cpp
     src/grass/grass_handler.cpp
     src/grass/grass_handler.h
@@ -94,6 +97,8 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/grassGenerate.compute
         resources/shaders/grass.frag
         resources/shaders/grass.vert
+        resources/shaders/postprocessing.frag
+        resources/shaders/postprocessing.vert
         resources/shaders/utils.compute
         resources/sceneFiles/default.xml
 )

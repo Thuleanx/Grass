@@ -5,7 +5,7 @@ void Framebuffer::initialize() {
 	glGenFramebuffers(1, &fbo);
 }
 
-void Framebuffer::attachTexture(const GLenum &texture, GLenum attachmentPoint, bool is2D) {
+void Framebuffer::attachTexture(const GLuint &texture, GLenum attachmentPoint, bool is2D) {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	if (is2D) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentPoint, GL_TEXTURE_2D, texture, 0);

@@ -5,81 +5,6 @@
 using namespace glm;
 using namespace std;
 
-void GrassHandler::initShaders() {
-	shader_default.initializeProgram();
-	shader_default.attachShader(GL_VERTEX_SHADER, ":/resources/shaders/grass.vert");
-	shader_default.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/grass.frag");
-	shader_default.finalizeProgram();
-
-	shader_compute_grass.initializeProgram();
-	shader_compute_grass.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/grassGenerate.compute");
-	shader_compute_grass.finalizeProgram();
-}
-
-void GrassHandler::initVAOVBO() {
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vertexDataBuffer);
-}
-
-void GrassHandler::destroyVAOVBO() {
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vertexDataBuffer);
-}
-
-void GrassHandler::generateGrass() {
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexDataBuffer);
-
-	shader_compute_grass.useProgram();
-
-	int numBlades = numGrassBlades();
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexDataBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade * 3 * 
-		numBlades, nullptr, GL_STATIC_DRAW);
-
-	shader_compute_grass.setInt("bladeCntX", settings.bladeCnt);
-	shader_compute_grass.setInt("bladeCntZ", settings.bladeCnt);
-	shader_compute_grass.setFloat("bladeWidth", settings.bladeWidth);
-	shader_compute_grass.setFloat("bladeHeight", settings.bladeHeight * settings.bladeHeightScale);
-
-	shader_compute_grass.setFloat("bladePosVariance", settings.bladePosVariance);
-
-	shader_compute_grass.setFloat("bladeHeightVariance", settings.bladeHeightVariance);
-	shader_compute_grass.setFloat("bladeHeightNoiseScale", settings.bladeHeightNoiseScale);
-
-	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
-
-	glDispatchCompute(
-		ceil((2*settings.bladeCnt+1) / workGroupSz.x), 
-		ceil(1/workGroupSz.y), 
-		ceil((2*settings.bladeCnt+1) / workGroupSz.z));
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-
-	shader_compute_grass.detach();
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
-		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(0));
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
-		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
-
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 
-		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(8 * sizeof(GLfloat)));
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-}
-
-void GrassHandler::onSettingsChanged() {
-	destroyVAOVBO();
-	initVAOVBO();
-	generateGrass();
-}
-
 void GrassHandler::awake(RenderData &renderData) {
     Blit::initialize();
 
@@ -105,7 +30,10 @@ void GrassHandler::awake(RenderData &renderData) {
 
 	initShaders();
 	initVAOVBO();
+	initFramebuffers();
+
 	generateGrass();
+
 	shader_default.useProgram();
 	loadGrassData(shader_default);
 	loadLightData(shader_default, renderData);
@@ -119,6 +47,16 @@ void GrassHandler::onResize(int screen_width, int screen_height,
 	this->screen_height = screen_height;
 	this->fbo_width = fbo_width;
 	this->fbo_height = fbo_height;
+
+	destroyFramebuffers();
+	onResizeShaders();
+	initFramebuffers();
+}
+
+void GrassHandler::onSettingsChanged() {
+	destroyVAOVBO();
+	initVAOVBO();
+	generateGrass();
 }
 
 GLenum errorCheck()
@@ -135,25 +73,40 @@ GLenum errorCheck()
 }
 
 void GrassHandler::update(Camera &camera) {
-	glViewport(0, 0, screen_width, screen_height);
-	fbo_main.use();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	shader_default.useProgram();
-	loadCameraData(shader_default, camera);
 
-	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades() * 3);
-	glBindVertexArray(0);
+	rawPass: {
+		shader_default.useProgram();
+		fbo_raw.use();
+		glViewport(0, 0, fbo_width, fbo_height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		loadCameraData(shader_default, camera);
+
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades() * 3);
+		glBindVertexArray(0);
+	}
 	errorCheck();
 
-	shader_default.detach();
-	fbo_main.detach();
+	postProcessingBlit: {
+		shader_postprocessing.useProgram();
+		glViewport(0, 0, screen_height, screen_width);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, default_screen);
+
+		Blit::blit(fbo_main);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	errorCheck();
+
+	// unbind
+	shader_postprocessing.detach();
+	fbo_raw.detach();
 }
 
 void GrassHandler::onDestroy() {
 	Blit::destroy();
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vertexDataBuffer);
-	shader_default.destroy();
-	shader_compute_grass.destroy();
+	destroyShaders();
+	destroyVAOVBO();
+	destroyFramebuffers();
 }
