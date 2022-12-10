@@ -142,11 +142,11 @@ void MainWindow::initialize()
 					   0.1f, 10.0f, 100.0f, 100.0f, settings.farPlane);
 	createLabel(vLayout, "Grass", true);
 	createLabel(vLayout, "Blade Count");
-	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 150, 150, settings.bladeCnt);
+	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 500, 150, settings.bladeCnt);
 	createLabel(vLayout, "Density");
 	createSliderDouble(vLayout, densitySlider, densityBox,
-					   1, 1, 100, 30,
-                       0.1f, 0.1f, 10.0f, 3.0f, settings.density);
+					   1, 1, 1000, 100,
+                       0.1f, 0.1f, 100.0f, 10.0f, settings.density);
 	createLabel(vLayout, "Blade Height Scale");
 	createSliderDouble(vLayout, bladeHeightScaleSlider, bladeHeightScaleBox,
 					   1, 1, 100, 10,
