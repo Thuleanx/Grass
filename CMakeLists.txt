@@ -39,6 +39,8 @@ add_executable(${PROJECT_NAME}
     src/t_utils/Blit.cpp
     src/t_utils/Framebuffer.h
     src/t_utils/Framebuffer.cpp
+    src/t_utils/ErrorHandler.cpp
+    src/t_utils/ErrorHandler.h
 
     src/realtime.cpp
     src/mainwindow.cpp
@@ -97,6 +99,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/grassGenerate.compute
         resources/shaders/grass.frag
         resources/shaders/grass.vert
+        resources/shaders/FXAA.frag
         resources/shaders/postprocessing.frag
         resources/shaders/postprocessing.vert
         resources/shaders/utils.compute

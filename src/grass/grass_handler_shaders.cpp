@@ -1,4 +1,5 @@
 #include "grass_handler.h"
+#include "t_utils/ErrorHandler.h"
 
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace glm;
@@ -16,7 +17,7 @@ void GrassHandler::initShaders() {
 
 	shader_postprocessing.initializeProgram();
 	shader_postprocessing.attachShader(GL_VERTEX_SHADER, ":/resources/shaders/postprocessing.vert");
-	shader_postprocessing.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/postprocessing.frag");
+	shader_postprocessing.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/FXAA.frag");
 	shader_postprocessing.finalizeProgram();
 
 	shader_postprocessing.useProgram();
@@ -26,8 +27,10 @@ void GrassHandler::initShaders() {
 
 void GrassHandler::onResizeShaders() {
 	shader_postprocessing.useProgram();
-	shader_postprocessing.setVec4("_MainTex_TexelSize", vec4(1.0f/fbo_width, 1.0f/fbo_height, fbo_width, fbo_height));
+	shader_postprocessing.setVec4("_MainTex_TexelSize", vec4(1.0f/screen_width, 1.0f/screen_height, screen_width, screen_height));
 	shader_postprocessing.detach();
+
+	ErrorHandler::errorCheck("-- on resize shaders");
 }
 
 void GrassHandler::destroyShaders() {

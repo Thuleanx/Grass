@@ -78,6 +78,11 @@ void Realtime::paintGL() {
 		grass.onSettingsChanged();
 		settingsUpdated = false;
 	}
+	if (resized) {
+		grass.onResize(size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio, 
+			size().width(), size().height());
+		resized = false;
+	}
 	grass.update(t_camera);
 }
 
@@ -85,11 +90,8 @@ void Realtime::resizeGL(int w, int h) {
     // Tells OpenGL how big the screen is
     glViewport(0, 0, size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio);
 
-    // Students: anything requiring OpenGL calls when the program starts should be done here
 	t_camera.setSize(w,h);
-
-	grass.onResize(size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio, 
-		size().width(), size().height());
+	resized = true;
 }
 
 void Realtime::sceneChanged() {

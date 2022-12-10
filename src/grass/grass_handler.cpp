@@ -1,5 +1,6 @@
 #include "grass_handler.h"
 #include "t_utils/Blit.h"
+#include "t_utils/ErrorHandler.h"
 
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace glm;
@@ -38,6 +39,8 @@ void GrassHandler::awake(RenderData &renderData) {
 	loadGrassData(shader_default);
 	loadLightData(shader_default, renderData);
 	shader_default.detach();
+
+	ErrorHandler::errorCheck("-- on awake");
 }
 
 void GrassHandler::onResize(int screen_width, int screen_height, 
@@ -48,28 +51,19 @@ void GrassHandler::onResize(int screen_width, int screen_height,
 	this->fbo_width = fbo_width;
 	this->fbo_height = fbo_height;
 
-	destroyFramebuffers();
 	onResizeShaders();
+	destroyFramebuffers();
 	initFramebuffers();
+
+	ErrorHandler::errorCheck("-- on resize");
 }
 
 void GrassHandler::onSettingsChanged() {
 	destroyVAOVBO();
 	initVAOVBO();
 	generateGrass();
-}
 
-GLenum errorCheck()
-{
-	GLenum code;
-	const GLubyte *string;
-	code = glGetError();
-	if (code != GL_NO_ERROR)
-	{
-		string = gluErrorString(code);
-		fprintf(stderr, "OpenGL error: %s\n", string);
-	}
-	return code;
+	ErrorHandler::errorCheck("-- on settings changed");
 }
 
 void GrassHandler::update(Camera &camera) {
@@ -77,7 +71,8 @@ void GrassHandler::update(Camera &camera) {
 	rawPass: {
 		shader_default.useProgram();
 		fbo_raw.use();
-		glViewport(0, 0, fbo_width, fbo_height);
+		// glViewport(0, 0, fbo_width, fbo_height);
+		glViewport(0, 0, screen_width, screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		loadCameraData(shader_default, camera);
 
@@ -85,19 +80,20 @@ void GrassHandler::update(Camera &camera) {
 		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades() * 3);
 		glBindVertexArray(0);
 	}
-	errorCheck();
+
+	ErrorHandler::errorCheck("-- rendering raw pass");
 
 	postProcessingBlit: {
 		shader_postprocessing.useProgram();
-		glViewport(0, 0, screen_height, screen_width);
+		glViewport(0, 0, screen_width, screen_height);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, default_screen);
-
 		Blit::blit(fbo_main);
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	errorCheck();
+	ErrorHandler::errorCheck("-- rendering screen pass");
 
 	// unbind
 	shader_postprocessing.detach();

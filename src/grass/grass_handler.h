@@ -34,6 +34,7 @@ class GrassHandler {
 		GLuint vertexDataBuffer;
 
 		GLuint default_screen;
+		GLuint default_screen_depth;
 
 		const int vertexOutputSizeBytes = 12;
 		const int trianglesPerBlade = 1;

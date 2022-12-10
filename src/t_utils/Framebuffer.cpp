@@ -13,6 +13,11 @@ void Framebuffer::attachTexture(const GLuint &texture, GLenum attachmentPoint, b
 	} else	glFramebufferTexture(GL_FRAMEBUFFER, attachmentPoint, texture, 0);
 }
 
+void Framebuffer::attachRenderBuffer(const GLuint &renderBuffer, GLenum attachmentPoint) {
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachmentPoint, GL_RENDERBUFFER, renderBuffer);
+}
+
 void Framebuffer::finalize() {
 	glDrawBuffers(attachmentPoints.size(), attachmentPoints.data());
 }
@@ -27,6 +32,7 @@ void Framebuffer::checkStatus() {
 
 void Framebuffer::destroy() {
 	glDeleteFramebuffers(1, &fbo);
+	attachmentPoints.clear();
 }
 
 void Framebuffer::createTexture(GLuint &texture, GLenum format, GLenum internalFormat, 
@@ -37,9 +43,15 @@ void Framebuffer::createTexture(GLuint &texture, GLenum format, GLenum internalF
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
-	glViewport(0,0, width, height); // not needed
 
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 
 		0, internalFormat, dataType, nullptr);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Framebuffer::createRenderBuffer(GLuint &renderBuffer, GLenum internalFormat, int width, int height) {
+	glGenRenderbuffers(1, &renderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, width, height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }

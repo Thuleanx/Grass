@@ -20,6 +20,8 @@ struct Settings {
     float bladeHeightVariance =5.0f;
 	float bladeHeightNoiseScale = 0.02f;
 
+	bool applyFXAA = false;
+
 	std::string grassColorTip = "#eff9d6";
 	std::string grassColorTop = "#ba5044";
 	std::string grassColorBottom = "#7a1c4b";
