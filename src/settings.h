@@ -14,13 +14,15 @@ struct Settings {
 	float bladeWidth = 0.05f;
 	float bladeWidthVariance = 0.03f;
 	float bladeHeight = 1.0f;
-    float bladeHeightVariance = 0.5f;
+    float bladeHeightVariance = 0.75f;
     float bladeHeightScale = 5.0f;
 
 	float bladePosVariance = 1.0f;
 	float bladeHeightNoiseScale = 0.2f;
 
-	float bladeBendMax = 0.5f;
+	float bladeBendMax = 0.8f;
+	float bladeCurvature = 8.0f;
+	int bladeSegments = 1;
 
 	bool applyFXAA = false;
 

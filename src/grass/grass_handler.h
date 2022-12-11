@@ -37,9 +37,9 @@ class GrassHandler {
 		GLuint default_screen_depth;
 
 		const int vertexOutputSizeBytes = 12;
-		const int trianglesPerBlade = 1;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
 
+		int trianglesPerBlade() { return settings.bladeSegments * 2 + 1; }
         int numGrassBlades() { return (settings.bladeCnt*2+1) * (settings.bladeCnt*2+1);}
 
 		void generateGrass();

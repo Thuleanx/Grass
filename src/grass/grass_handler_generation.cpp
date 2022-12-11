@@ -21,7 +21,7 @@ void GrassHandler::generateGrass() {
 
 	int numBlades = numGrassBlades();
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexDataBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade * 3 * 
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade() * 3 * 
 		numBlades, nullptr, GL_STATIC_DRAW);
 
 	shader_compute_grass.setInt("bladeCntX", settings.bladeCnt);
@@ -36,6 +36,9 @@ void GrassHandler::generateGrass() {
 	shader_compute_grass.setFloat("bladeHeightNoiseScale", settings.bladeHeightNoiseScale);
 
 	shader_compute_grass.setFloat("bladeBendMax", settings.bladeBendMax);
+
+	shader_compute_grass.setInt("bladeSegments", settings.bladeSegments);
+	shader_compute_grass.setFloat("bladeCurvature", settings.bladeCurvature);
 
 	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 

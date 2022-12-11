@@ -77,7 +77,7 @@ void GrassHandler::update(Camera &camera) {
 		loadCameraData(shader_default, camera);
 
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade * numGrassBlades() * 3);
+		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade() * numGrassBlades() * 3);
 		glBindVertexArray(0);
 	}
 

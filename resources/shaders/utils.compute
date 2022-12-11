@@ -90,6 +90,7 @@ mat4 rotateAroundAxis(vec3 axis, float angle)
 // range [0,1]
 float random1(vec2 c) {
 	float j = 4096.0*sin(dot(c,vec2(17.0, 59.4)));
+	return snoise(c*512 + j);
 	return fract(512.0 * j);
 }
 // range [0,1]^2
