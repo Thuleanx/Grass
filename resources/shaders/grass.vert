@@ -17,13 +17,13 @@ uniform mat4 projMatrix;
 uniform float time;
 
 vec2 windDirection = vec2(1,-1);
-float windFrequencyLo = 1;
-float windFrequencyHi = 0.8;
+float windFrequencyLo = 0.5;
+float windFrequencyHi = 0.2;
 float windAmplitude = 0.65;
 
 void main() {
-	float wind = cos(time * ((idHash >= 0.8 ? windFrequencyHi : windFrequencyLo) - grassHeight*0.5) +  idHash*3f);
-	wind = (wind*wind*windAmplitude)*uvIn.y*grassHeight*0.6;
+	float wind = cos(time * ((idHash >= 0.8 ? windFrequencyHi : windFrequencyLo) * (1+grassHeight/2)) +  idHash*0.5f);
+	wind = (wind*wind*windAmplitude)*uvIn.y*(1+grassHeight/2)*0.6;
 
 	posWS = vec4(posWSIn + wind * vec3(windDirection.x, 0, windDirection.y),1);
 	normalWS = vec4(normalize(normalWSIn),0);
