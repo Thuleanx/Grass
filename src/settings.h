@@ -21,8 +21,8 @@ struct Settings {
 	float bladeHeightNoiseScale = 0.2f;
 
 	float bladeBendMax = 0.8f;
-	float bladeCurvature = 8.0f;
-	int bladeSegments = 1;
+	float bladeCurvature = 0.5f;
+	int bladeSegments = 4;
 
 	bool applyFXAA = false;
 
