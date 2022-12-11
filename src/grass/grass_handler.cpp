@@ -1,10 +1,13 @@
 #include "grass_handler.h"
 #include "t_utils/Blit.h"
 #include "t_utils/ErrorHandler.h"
+#include <ctime>
 
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace glm;
 using namespace std;
+
+clock_t startTime;
 
 void GrassHandler::awake(RenderData &renderData) {
     Blit::initialize();
@@ -41,6 +44,7 @@ void GrassHandler::awake(RenderData &renderData) {
 	shader_default.detach();
 
 	ErrorHandler::errorCheck("-- on awake");
+	startTime = clock();
 }
 
 void GrassHandler::onResize(int screen_width, int screen_height, 
@@ -69,6 +73,7 @@ void GrassHandler::onSettingsChanged() {
 void GrassHandler::update(Camera &camera) {
 	rawPass: {
 		shader_default.useProgram();
+		shader_default.setFloat("time", float(clock()-startTime) / CLOCKS_PER_SEC);
 		fbo_raw.use();
 		// glViewport(0, 0, fbo_width, fbo_height);
 		glViewport(0, 0, screen_width, screen_height);

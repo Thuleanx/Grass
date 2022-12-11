@@ -6,10 +6,10 @@
 	</globaldata>
 
 	<cameradata>
-		<pos x="-3" y="2" z="-3"/>
+		<pos x="-3" y="4" z="-3"/>
 		<focus x="0" y="0" z="0"/>
 		<up x="0" y="1" z="0"/>
-		<heightangle v="30"/>
+		<heightangle v="55"/>
 	</cameradata>
 
 	<lightdata>

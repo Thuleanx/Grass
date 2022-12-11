@@ -4,11 +4,11 @@ layout(local_size_x = 8, local_size_y = 1, local_size_z=8) in; // if ur GPU has 
 
 struct DrawVertex {
 	vec3 posWS;
-	float padding0;
+	float idHash;
 	vec3 normWS;
-	float padding1;
+	float grassHeight;
 	vec2 uv;
-	vec2 padding2;
+	vec2 planeUV;
 };
 
 struct DrawTriangle {
@@ -62,7 +62,8 @@ void createBlade(
 
 	posWS += snoise(posWS.xz * hillHeightNoiseScale + 12300) * hillHeightMax;
 
-	float height = bladeHeight + bladeHeightVariance * iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f);
+	float grassHeight = iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f); 
+	float height = bladeHeight + bladeHeightVariance * grassHeight;
 	float width = bladeWidth + bladeWidthVariance * random1(posWS.xz + 123);
 	float maxBend = bladeBendMax * M_PI / 2 * random1(posWS.xz + 1230);
 
@@ -92,12 +93,16 @@ void createBlade(
 
 	setupBladePoint(vertices[bladeSegments*2], posWS, vec3(0, 1, 0), vec3(0), vec2(0.5,1), toWS);
 
+	float idHash = snoise((posWS.xz+1230) * 333);
 	for (int i = 0; i <= bladeSegments*2-2; i++) {
 		vec3 normal = triangleNormal(vertices[i].posWS, vertices[i+1].posWS, vertices[i+2].posWS);
 		for (int j = 0; j < 3; j++) {
 			blade[i].vertices[j].posWS = vertices[i+j].posWS;
 			blade[i].vertices[j].normWS = normal;
 			blade[i].vertices[j].uv = vertices[i+j].uv;
+			blade[i].vertices[j].idHash = idHash;
+			blade[i].vertices[j].grassHeight = grassHeight;
+			blade[i].vertices[j].planeUV = gl_GlobalInvocationID.xz * vec2(1/(2*bladeCntX), 1/(2*bladeCntZ));
 		}
 	}
 }
