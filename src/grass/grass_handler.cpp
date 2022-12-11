@@ -67,7 +67,6 @@ void GrassHandler::onSettingsChanged() {
 }
 
 void GrassHandler::update(Camera &camera) {
-
 	rawPass: {
 		shader_default.useProgram();
 		fbo_raw.use();

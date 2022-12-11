@@ -39,6 +39,9 @@ const int MAX_SUPPORTED_BLADEPOINTS = MAX_SUPPORTED_SEGMENTS * 2 + 1;
 uniform int bladeSegments = 1;
 uniform float bladeCurvature;
 
+uniform float hillHeightMax;
+uniform float hillHeightNoiseScale;
+
 uniform vec2 density;
 
 vec3 triangleNormal(vec3 p0, vec3 p1, vec3 p2) {
@@ -56,6 +59,8 @@ void setupBladePoint(inout DrawVertex vertex, vec3 offsetWS,
 void createBlade(
 	in vec3 posWS,
 	out DrawTriangle blade[MAX_SUPPORTED_TRIANGLES]) {
+
+	posWS += snoise(posWS.xz * hillHeightNoiseScale + 12300) * hillHeightMax;
 
 	float height = bladeHeight + bladeHeightVariance * iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f);
 	float width = bladeWidth + bladeWidthVariance * random1(posWS.xz + 123);

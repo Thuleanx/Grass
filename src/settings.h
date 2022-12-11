@@ -11,8 +11,8 @@ struct Settings {
     float farPlane = 1;
 
 	// can't be modified / not exposed
-	float bladeWidth = 0.05f;
-	float bladeWidthVariance = 0.03f;
+	float bladeWidth = 0.1f;
+	float bladeWidthVariance = 0.05f;
 	float bladeHeight = 1.0f;
     float bladeHeightVariance = 0.75f;
     float bladeHeightScale = 5.0f;
@@ -23,6 +23,9 @@ struct Settings {
 	float bladeBendMax = 0.8f;
 	float bladeCurvature = 0.5f;
 	int bladeSegments = 4;
+
+	float hillHeightMax = 2.0f;
+	float hillHeightNoiseScale = 0.01f;
 
 	bool applyFXAA = false;
 

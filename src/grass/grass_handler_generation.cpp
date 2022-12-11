@@ -42,6 +42,9 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 
+	shader_compute_grass.setFloat("hillHeightMax", settings.hillHeightMax);
+	shader_compute_grass.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
+
 	glDispatchCompute(
 		ceil((2*settings.bladeCnt+1) / workGroupSz.x), 
 		ceil(1/workGroupSz.y), 
