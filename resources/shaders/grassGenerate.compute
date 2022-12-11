@@ -23,47 +23,80 @@ layout(std430, binding=0) buffer DrawTriangles
 uniform int bladeCntX;
 uniform int bladeCntZ;
 uniform float bladeWidth;
+uniform float bladeWidthVariance;
 
 uniform float bladePosVariance;
 
+uniform float bladeHeight;
 uniform float bladeHeightVariance;
 uniform float bladeHeightNoiseScale;
 
-uniform float bladeHeight;
+uniform float bladeBendMax;
+
+const int MAX_SUPPORTED_SEGMENTS = 5;
+const int MAX_SUPPORTED_BLADEPOINTS = MAX_SUPPORTED_SEGMENTS * 2 + 1;
+uniform int maxBladeSegments;
+uniform float bladeCurvature;
+
 uniform vec2 density;
 
 vec3 triangleNormal(vec3 p0, vec3 p1, vec3 p2) {
 	return normalize(cross(p1-p0, p2-p0));
 }
 
+void setupBladePoint(inout DrawVertex vertex, vec3 offsetWS, 
+	vec3 posOS, vec3 normalOS, vec2 uv, mat4 toWS) {
+
+	vertex.posWS = vec3(toWS * vec4(posOS, 1)) + offsetWS;
+	vertex.normWS = vec3(normalize(toWS * vec4(normalOS, 0)));
+	vertex.uv = uv;
+}
+
 void createBlade(
 	in vec3 posWS,
-	out DrawTriangle blade[1]) {
+	out DrawTriangle blade[MAX_SUPPORTED_SEGMENTS]) {
 
-	vec3 normal = vec3(0,1,0);
+	float height = bladeHeight + bladeHeightVariance * iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f);
+	float width = bladeWidth + bladeWidthVariance * random1(posWS.xz + 123);
+	float maxBend = bladeBendMax * M_PI / 2 * random1(posWS.xz + 1230);
 
-	// randomize rotation
-	vec3 tangent = vec3(1,0,0);
-	tangent.xz = snoise2(posWS.xz * 3000 + 9000);
-	vec3 bitangent = cross(normal, tangent);
-
-	float height = bladeHeight + bladeHeightVariance * snoise(posWS.xz) * bladeHeightNoiseScale;
-
-	vec3 v[3] = vec3[3](
-		posWS - tangent * bladeWidth,
-		posWS + tangent * bladeWidth,
-		posWS + normal * height
+	mat4 bendMatrix = rotateAroundAxis(vec3(1,0,0), maxBend);
+	mat4 rotMatrix = rotateAroundAxis(vec3(0,1,0), snoise(posWS.xz * 0321) * 2 * M_PI);
+	mat4 scaleMatrix = mat4(
+		vec4(width,0,0,0),
+		vec4(0,height,0,0),
+		vec4(0,0,1,0),
+		vec4(0,0,0,1)
 	);
 
-	blade[0].vertices[0].posWS = v[0];
-	blade[0].vertices[1].posWS = v[1];
-	blade[0].vertices[2].posWS = v[2];
-	blade[0].vertices[0].uv = vec2(0, 0);
-	blade[0].vertices[1].uv = vec2(1, 0);
-	blade[0].vertices[2].uv = vec2(0.5, 1);
+	mat4 toWS = rotMatrix * bendMatrix * scaleMatrix;
 
-	vec3 bladeNormal = triangleNormal(v[0],v[1],v[2]);
-	for (int k = 0; k < 3; k++) blade[0].vertices[k].normWS = bladeNormal;
+	DrawVertex vertices[MAX_SUPPORTED_BLADEPOINTS];
+
+	int numSegments = max(min(MAX_SUPPORTED_SEGMENTS, maxBladeSegments),1);
+
+	for (int i = 0; i < numBladeSegments; i++) {
+		float v = i/float(numBladeSegments);
+		float u = 0.5 - (1-v)*.5f;
+
+		mat4 bendBladeMatrix = rotateAroundAxis(vec3(1,0,0), maxBend * pow(v, bladeCurvature));
+		mat4 toWSSegment = rotMatrix * bendBladeMatrix * scaleMatrix;
+
+		setupBladePoint(vertices[i<<1], posWS, vec3(2*(u-0.5), v, 0), vec3(0), vec2(u,v), toWSSegment);
+		setupBladePoint(vertices[i<<1|1], posWS, vec3(2*(0.5-u), v, 0), vec3(0), vec2(1-u,v), toWSSegment);
+	}
+
+	setupBladePoint(vertices[numBladeSegments<<1], posWS, vec3(0, 1, 0), vec3(0), vec2(0.5,1), toWS);
+
+
+	for (int i = 0; i < numBladeSegments*2-2; i++) {
+		vec3 normal = triangleNormal(vertices[i], vertices[i+1], vertices[i+2]);
+		for (int j = 0; j < 3; j++) {
+			blade[i].vertices[j].posWS = vertices[i+j].posWS;
+			blade[i].vertices[j].normWS = normal;
+			blade[i].vertices[j].uv = vertices[i+j].uv;
+		}
+	}
 }
 
 void main() {
@@ -75,7 +108,7 @@ void main() {
 
 	int id = int(int(gl_GlobalInvocationID.x) * (2*bladeCntZ+1)) + int(gl_GlobalInvocationID.z);
 
-	DrawTriangle blade[1];
+	DrawTriangle blade[MAX_SUPPORTED_SEGMENTS];
 	createBlade(posWS, blade);
 	triangles[id] = blade[0];
 }

@@ -12,13 +12,15 @@ struct Settings {
 
 	// can't be modified / not exposed
 	float bladeWidth = 0.05f;
+	float bladeWidthVariance = 0.03f;
 	float bladeHeight = 1.0f;
-    float bladeHeightScale = 1.0f;
+    float bladeHeightVariance = 0.5f;
+    float bladeHeightScale = 5.0f;
 
-	float bladePosVariance = 0.5f;
+	float bladePosVariance = 1.0f;
+	float bladeHeightNoiseScale = 0.2f;
 
-    float bladeHeightVariance =5.0f;
-	float bladeHeightNoiseScale = 0.02f;
+	float bladeBendMax = 0.5f;
 
 	bool applyFXAA = false;
 

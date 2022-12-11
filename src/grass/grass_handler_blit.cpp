@@ -20,7 +20,9 @@ void GrassHandler::initFramebuffers() {
 }
 
 void GrassHandler::destroyFramebuffers() {
-	glDeleteTextures(1, &default_screen);
+	fbo_raw.detach();
 	fbo_raw.destroy();
 	ErrorHandler::errorCheck("-- on destroy framebuffer");
+	glDeleteTextures(1, &default_screen);
+	ErrorHandler::errorCheck("-- on delete textures");
 }

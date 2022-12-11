@@ -30,9 +30,12 @@ void GrassHandler::generateGrass() {
 	shader_compute_grass.setFloat("bladeHeight", settings.bladeHeight * settings.bladeHeightScale);
 
 	shader_compute_grass.setFloat("bladePosVariance", settings.bladePosVariance);
-
+	shader_compute_grass.setFloat("bladeWidthVariance", settings.bladeWidthVariance);
 	shader_compute_grass.setFloat("bladeHeightVariance", settings.bladeHeightVariance);
+
 	shader_compute_grass.setFloat("bladeHeightNoiseScale", settings.bladeHeightNoiseScale);
+
+	shader_compute_grass.setFloat("bladeBendMax", settings.bladeBendMax);
 
 	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 
