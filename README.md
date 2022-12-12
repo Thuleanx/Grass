@@ -48,10 +48,13 @@ Rough plan of action:
 - [x] ~~Fragment shader to sample the grass texture.~~
 - [x] Vary the height of the grass, 
 - [x] FXAA so the grass wont look bad when moving around
-- [ ] Color grass by height
+- [x] Color grass by height
 - [ ] Skybox
 - [ ] Switch camera movement from centering around a sphere at a fixed angle (because grass will definitely look really crappy from top down)
 - [ ] Pass sphere position to shader, sway generated grass away from sphere position.
 - [x] Add noise to grass height and color. Also add wind.
 - [ ] Create a velocity texture and use compute buffer to dims it every frame. Then draw a circle mask around the character at the position of the controller, with intensity scaled by character velocity.
 - [ ] Instead of dimming, use the mass-spring damper equation
+- [ ] Depth of field
+- [ ] Chunking
+- [ ] Camera Frustrum Culling

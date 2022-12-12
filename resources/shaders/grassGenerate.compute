@@ -62,7 +62,8 @@ void createBlade(
 
 	posWS += snoise(posWS.xz * hillHeightNoiseScale + 12300) * hillHeightMax;
 
-	float grassHeight = iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f); 
+	float grassHeightNoise = snoise(posWS.xz*300);
+	float grassHeight = pow(clamp(iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f) + pow(abs(grassHeightNoise),5) * sign(grassHeightNoise) * 0.25, 0, 1), 2); 
 	float height = bladeHeight + bladeHeightVariance * grassHeight;
 	float width = bladeWidth + bladeWidthVariance * random1(posWS.xz + 123);
 	float maxBend = bladeBendMax * M_PI / 2 * random1(posWS.xz + 1230);
