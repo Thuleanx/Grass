@@ -77,4 +77,6 @@ void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 	shader.setVec4("grassColorTop", hexToColor(settings.grassColorTop));
 	shader.setVec4("grassColorBottom", hexToColor(settings.grassColorBottom));
 	shader.setVec4("grassColorAmbientOcclusion", hexToColor(settings.grassColorAmbientOcclusion));
+
+	shader.setVec4("grassColorOld", hexToColor(settings.grassColorOld));
 }

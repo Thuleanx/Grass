@@ -18,10 +18,10 @@ struct Settings {
     float bladeHeightScale = 5.0f;
 
 	float bladePosVariance = 1.0f;
-	float bladeHeightNoiseScale = 0.2f;
+	float bladeHeightNoiseScale = 0.4f;
 
-	float bladeBendMax = 0.8f;
-	float bladeCurvature = 0.5f;
+	float bladeBendMax = 0.6f;
+	float bladeCurvature = 1.0f;
 	int bladeSegments = 4;
 
 	float hillHeightMax = 2.0f;
@@ -29,10 +29,12 @@ struct Settings {
 
 	bool applyFXAA = false;
 
-	std::string grassColorTip = "#eff9d6";
-	std::string grassColorTop = "#ba5044";
-	std::string grassColorBottom = "#7a1c4b";
-	std::string grassColorAmbientOcclusion = "#1b0326";
+	std::string grassColorTip = "#c9d4b8";
+	std::string grassColorTop = "#90c0a0";
+	std::string grassColorBottom = "#6f919c";
+	std::string grassColorAmbientOcclusion = "#575f7e";
+
+	std::string grassColorOld = "#d4beb8";
 };
 
 // The global Settings object, will be initialized by MainWindow

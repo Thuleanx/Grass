@@ -41,7 +41,7 @@ void GrassHandler::awake(RenderData &renderData) {
 
 	shader_default.useProgram();
 	loadGrassData(shader_default);
-	loadLightData(shader_default, renderData);
+	// loadLightData(shader_default, renderData);
 	shader_default.detach();
 
 	ErrorHandler::errorCheck("-- on awake");
