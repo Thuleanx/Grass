@@ -27,6 +27,7 @@ class GrassHandler {
 		ShaderProgram shader_default;
 		ShaderProgram shader_postprocessing;
 		ShaderProgram shader_compute_grass;
+		ShaderProgram shader_compute_windNoise;
 		int screen_width, screen_height;
 		int fbo_width, fbo_height;
 
@@ -35,14 +36,18 @@ class GrassHandler {
 
 		GLuint default_screen;
 		GLuint default_screen_depth;
+		GLuint wind_noiseTexture;
 
 		const int vertexOutputSizeBytes = 12;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
+		const int WIND_NOISE_TEXTURE_SZ = 800;
 
 		int trianglesPerBlade() { return settings.bladeSegments * 2 + 1; }
         int numGrassBlades() { return (settings.bladeCnt*2+1) * (settings.bladeCnt*2+1);}
 
 		void generateGrass();
+		void generateWindTexture();
+		void destroyWindTexture();
 
 		void initShaders();
 		void onResizeShaders();

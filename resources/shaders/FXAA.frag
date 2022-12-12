@@ -6,6 +6,7 @@ in vec2 uv;
 
 uniform sampler2D _MainTex;
 uniform vec4 _MainTex_TexelSize;
+uniform float time;
 
 out vec4 fragColor;
 
@@ -170,6 +171,7 @@ vec4 Fxaa(sampler2D tex, vec2 uv) {
 }
 
 void main() {
+	// fragColor = texture(_MainTex, uv);
 	fragColor = Fxaa(_MainTex, uv);
 	fragColor.a = 1;
 }

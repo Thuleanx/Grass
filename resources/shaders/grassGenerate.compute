@@ -3,12 +3,12 @@ layout(local_size_x = 8, local_size_y = 1, local_size_z=8) in; // if ur GPU has 
 #include utils.compute
 
 struct DrawVertex {
-	vec3 posWS;
-	float idHash;
-	vec3 normWS;
-	float grassHeight;
-	vec2 uv;
-	vec2 planeUV;
+	vec3 posWS; //0
+	float idHash; //3
+	vec3 normWS; // 4
+	float grassHeight; // 7
+	vec2 uv; // 8
+	vec2 planeUV; // 10
 };
 
 struct DrawTriangle {
@@ -33,7 +33,7 @@ uniform float bladeHeightNoiseScale;
 
 uniform float bladeBendMax;
 
-const int MAX_SUPPORTED_SEGMENTS = 5;
+const int MAX_SUPPORTED_SEGMENTS = 7;
 const int MAX_SUPPORTED_TRIANGLES = MAX_SUPPORTED_SEGMENTS * 2 - 1;
 const int MAX_SUPPORTED_BLADEPOINTS = MAX_SUPPORTED_SEGMENTS * 2 + 1;
 uniform int bladeSegments = 1;
@@ -102,7 +102,8 @@ void createBlade(
 			blade[i].vertices[j].uv = vertices[i+j].uv;
 			blade[i].vertices[j].idHash = idHash;
 			blade[i].vertices[j].grassHeight = grassHeight;
-			blade[i].vertices[j].planeUV = gl_GlobalInvocationID.xz * vec2(1/(2*bladeCntX), 1/(2*bladeCntZ));
+			blade[i].vertices[j].planeUV = 
+				gl_GlobalInvocationID.xz * vec2(1.00/(2*bladeCntX), 1.00/(2*bladeCntZ));
 		}
 	}
 }

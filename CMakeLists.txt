@@ -97,6 +97,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
         resources/shaders/default.frag
         resources/shaders/default.vert
         resources/shaders/grassGenerate.compute
+        resources/shaders/noiseGenerate.compute
         resources/shaders/grass.frag
         resources/shaders/grass.vert
         resources/shaders/FXAA.frag

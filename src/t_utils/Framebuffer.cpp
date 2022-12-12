@@ -36,7 +36,7 @@ void Framebuffer::destroy() {
 }
 
 void Framebuffer::createTexture(GLuint &texture, GLenum format, GLenum internalFormat, 
-    GLenum dataType, int width, int height, GLenum filter, GLenum wrapMode) {
+    GLenum dataType, int width, int height, GLenum filter, GLenum wrapMode, const void* data) {
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
@@ -45,7 +45,7 @@ void Framebuffer::createTexture(GLuint &texture, GLenum format, GLenum internalF
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 
-		0, internalFormat, dataType, nullptr);
+		0, internalFormat, dataType, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

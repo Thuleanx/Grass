@@ -22,7 +22,7 @@ class Framebuffer {
 		void checkStatus();
 		void destroy();
 		static void createTexture(GLuint &texture, GLenum format, GLenum internalFormat, GLenum dataType, 
-			int width, int height, GLenum filter = GL_LINEAR, GLenum wrapMode = GL_REPEAT);
+			int width, int height, GLenum filter = GL_LINEAR, GLenum wrapMode = GL_REPEAT, const void* data = nullptr);
 		static void createRenderBuffer(GLuint &renderBuffer, GLenum internalFormat, int width, int height);
 	private:
 		GLuint fbo;

@@ -1,4 +1,5 @@
 #include "grass_handler.h"
+#include "t_utils/ErrorHandler.h"
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace glm;
 using namespace std;
@@ -54,18 +55,22 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.detach();
 
+	// posWS
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
 		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(0));
 
+	// normWS
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
 		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(4 * sizeof(GLfloat)));
 
+	// uv
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 
 		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(8 * sizeof(GLfloat)));
 
+	// planeUV
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 
 		sizeof(GLfloat) * vertexOutputSizeBytes, reinterpret_cast<void*>(10 * sizeof(GLfloat)));
@@ -80,4 +85,40 @@ void GrassHandler::generateGrass() {
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void GrassHandler::generateWindTexture() {
+	shader_default.useProgram();
+	ErrorHandler::errorCheck("-- on use program");
+	shader_default.setVec4("windNoise_TexelSize", vec4(float(1)/WIND_NOISE_TEXTURE_SZ, float(1)/WIND_NOISE_TEXTURE_SZ,
+		WIND_NOISE_TEXTURE_SZ, WIND_NOISE_TEXTURE_SZ));
+	shader_default.setInt("windNoise", 0);
+	ErrorHandler::errorCheck("-- on set ints");
+
+	shader_compute_windNoise.useProgram();
+
+	glGenTextures(1, &wind_noiseTexture);
+	glBindTexture(GL_TEXTURE_2D, wind_noiseTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, WIND_NOISE_TEXTURE_SZ, WIND_NOISE_TEXTURE_SZ, 
+		0, GL_RGBA, GL_FLOAT, nullptr);
+	glBindImageTexture(0, wind_noiseTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+
+	ErrorHandler::errorCheck("-- on gen texture");
+
+	glDispatchCompute(
+		WIND_NOISE_TEXTURE_SZ, WIND_NOISE_TEXTURE_SZ, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+	ErrorHandler::errorCheck("-- on dispatch");
+
+	glBindImageTexture(0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	shader_compute_windNoise.detach();
+}
+
+void GrassHandler::destroyWindTexture() {
+	glDeleteTextures(1, &wind_noiseTexture);
 }

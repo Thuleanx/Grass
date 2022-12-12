@@ -40,15 +40,18 @@ Rough plan of action:
 - [x] Use compute shader to generate a compute buffer of grass positions.
 - [x] ~~Use geometry shader to generate a simple triangle on top of each position.~~
 - [x] Check if the above renders.
-- [ ] Draw grass texture.
+- [x] Draw grass texture.
 
 **At this point of the project, grass would be already visible. The rest are added features and optimizations**
 - [x] ~~Switch geometry shader to generate 3 billboards for each grass.~~
-- [ ] Grass geometry in compute shader, multiple triangles per blade
-- [ ] Fragment shader to sample the grass texture.
-- [ ] Vary the height of the grass, and color by height.
+- [x] Grass geometry in compute shader, multiple triangles per blade
+- [x] ~~Fragment shader to sample the grass texture.~~
+- [x] Vary the height of the grass, 
+- [x] FXAA so the grass wont look bad when moving around
+- [ ] Color grass by height
+- [ ] Skybox
 - [ ] Switch camera movement from centering around a sphere at a fixed angle (because grass will definitely look really crappy from top down)
 - [ ] Pass sphere position to shader, sway generated grass away from sphere position.
-- [ ] Add noise to grass height and color. Also add wind.
+- [x] Add noise to grass height and color. Also add wind.
 - [ ] Create a velocity texture and use compute buffer to dims it every frame. Then draw a circle mask around the character at the position of the controller, with intensity scaled by character velocity.
 - [ ] Instead of dimming, use the mass-spring damper equation

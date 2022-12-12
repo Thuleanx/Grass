@@ -37,6 +37,7 @@ void GrassHandler::awake(RenderData &renderData) {
 	initFramebuffers();
 
 	generateGrass();
+	generateWindTexture();
 
 	shader_default.useProgram();
 	loadGrassData(shader_default);
@@ -75,12 +76,17 @@ void GrassHandler::update(Camera &camera) {
 		shader_default.useProgram();
 		shader_default.setFloat("time", float(clock()-startTime) / CLOCKS_PER_SEC);
 		fbo_raw.use();
-		// glViewport(0, 0, fbo_width, fbo_height);
-		glViewport(0, 0, screen_width, screen_height);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, wind_noiseTexture);
+
+		glViewport(0, 0, fbo_width, fbo_height);
+		// glViewport(0, 0, screen_width, screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		loadCameraData(shader_default, camera);
 
 		glBindVertexArray(vao);
+		// glBindTexture(GL_TEXTURE_2D, 0);
 		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade() * numGrassBlades() * 3);
 		glBindVertexArray(0);
 	}
@@ -89,10 +95,12 @@ void GrassHandler::update(Camera &camera) {
 
 	postProcessingBlit: {
 		shader_postprocessing.useProgram();
+		shader_postprocessing.setFloat("time", float(clock()-startTime) / CLOCKS_PER_SEC);
 		glViewport(0, 0, screen_width, screen_height);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, default_screen);
+		// glBindTexture(GL_TEXTURE_2D, wind_noiseTexture);
 		Blit::blit(fbo_main);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -109,4 +117,5 @@ void GrassHandler::onDestroy() {
 	destroyShaders();
 	destroyVAOVBO();
 	destroyFramebuffers();
+	destroyWindTexture();
 }

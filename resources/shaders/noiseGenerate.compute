@@ -1,0 +1,20 @@
+#version 430
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; 
+#include utils.compute
+layout(rgba32f, binding = 0) uniform image2D noiseTexture;
+
+const int NOISE_TEXTURE_SZ = 800;
+
+void main() {
+	if (int(gl_GlobalInvocationID.x) >= NOISE_TEXTURE_SZ) return;
+	if (int(gl_GlobalInvocationID.y) >= NOISE_TEXTURE_SZ) return;
+	float x = float(gl_GlobalInvocationID.x) / NOISE_TEXTURE_SZ + 0.5/NOISE_TEXTURE_SZ;
+	float y = float(gl_GlobalInvocationID.y) / NOISE_TEXTURE_SZ + 0.5/NOISE_TEXTURE_SZ;
+
+	float F = 0.05;
+	float A = 2;
+	float FF = 2;
+
+	int i = int(gl_GlobalInvocationID.x) + int(gl_GlobalInvocationID.y) * NOISE_TEXTURE_SZ;
+	imageStore(noiseTexture, ivec2(gl_GlobalInvocationID.xy), vec4(sin((x+y + snoise(vec2(x,y)*F)*A) *FF*M_PI*2)));
+}
