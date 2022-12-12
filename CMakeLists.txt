@@ -27,6 +27,9 @@ include_directories(src)
 add_executable(${PROJECT_NAME}
     src/main.cpp
 
+    src/player/player.cpp
+    src/player/player.h
+
     src/grass/grass_handler_blit.cpp
     src/grass/grass_handler_shaders.cpp
     src/grass/grass_handler_generation.cpp
@@ -94,8 +97,8 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     PREFIX
         "/"
     FILES
-        resources/shaders/default.frag
-        resources/shaders/default.vert
+        resources/shaders/player.frag
+        resources/shaders/player.vert
         resources/shaders/grassGenerate.compute
         resources/shaders/noiseGenerate.compute
         resources/shaders/grass.frag
