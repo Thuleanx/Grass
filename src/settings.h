@@ -29,12 +29,14 @@ struct Settings {
 
 	bool applyFXAA = false;
 
-	std::string grassColorTip = "#c9d4b8";
-	std::string grassColorTop = "#90c0a0";
-	std::string grassColorBottom = "#6f919c";
-	std::string grassColorAmbientOcclusion = "#575f7e";
+	std::string grassColorTip = "#6e5181";
+	std::string grassColorTop = "#6f1d5c";
+	std::string grassColorBottom = "#4f1446";
+	std::string grassColorAmbientOcclusion = "#2e0a30";
 
-	std::string grassColorOld = "#d4beb8";
+	std::string grassColorOld = "#6ceded";
+
+	std::string clearColor = "#0d001a";
 };
 
 // The global Settings object, will be initialized by MainWindow

@@ -39,6 +39,6 @@ vec4 blend(vec4 a, vec4 b) { return 1-(1-a)*(1-b); }
 void main() {
 	vec4 col = saturate(grassColor(grassColorTip, grassColorTop, grassColorBottom, grassColorAmbientOcclusion));
 	vec4 colOld = blend(col, grassColorOld);
-	fragColor = mix(col, colOld, grassHeight * uv.y * uv.y);
+	fragColor = mix(col, colOld, grassHeight * grassHeight * uv.y * uv.y);
 	fragColor.a = 1;
 }

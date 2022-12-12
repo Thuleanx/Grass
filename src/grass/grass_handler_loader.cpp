@@ -79,4 +79,8 @@ void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 	shader.setVec4("grassColorAmbientOcclusion", hexToColor(settings.grassColorAmbientOcclusion));
 
 	shader.setVec4("grassColorOld", hexToColor(settings.grassColorOld));
+
+	vec4 clearCol = hexToColor(settings.clearColor);
+
+	glClearColor(clearCol.r, clearCol.g, clearCol.b, clearCol.a);
 }
