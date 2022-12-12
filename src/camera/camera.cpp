@@ -143,3 +143,6 @@ void Camera::rotate(vec2 movement) {
     up = rot*up;
 	recalculateView();
 }
+
+glm::vec3 Camera::getLook() const { return look; }
+glm::vec3 Camera::getUp() const { return up; }

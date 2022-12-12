@@ -24,6 +24,9 @@ public:
 
 	glm::vec4 getPosition() const;
 
+	glm::vec3 getLook() const;
+	glm::vec3 getUp() const;
+
     // Returns the aspect ratio of the camera.
     float getAspectRatio() const;
 
