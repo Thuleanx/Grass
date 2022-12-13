@@ -24,6 +24,12 @@ void GrassHandler::initShaders() {
 	shader_compute_windNoise.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/noiseGenerate.compute");
 	shader_compute_windNoise.finalizeProgram();
 
+	shader_default.useProgram();
+	shader_default.setInt("windNoise", 0);
+	shader_default.setInt("velocityBuffer", 1);
+	shader_default.setVec4("velocityBuffer_samplingScale", players.getVelocityBufferSamplingScale());
+	shader_default.detach();
+
 	shader_postprocessing.useProgram();
 	shader_postprocessing.setInt("_MainTex", 0);
 	shader_postprocessing.detach();

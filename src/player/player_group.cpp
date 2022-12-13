@@ -7,16 +7,16 @@ using namespace std;
 using namespace glm;
 
 void PlayerGroup::setupMask() {
-	vector<vec2> maskVector(MASK_SZ * MASK_SZ);
+	vector<vec4> maskVector(MASK_SZ * MASK_SZ);
 	f(x,0,MASK_SZ) f(y,0,MASK_SZ) {
 		vec2 origin = vec2(MASK_RADIUS, MASK_RADIUS);
 		vec2 pos = (vec2(x,y) - origin) / float(MASK_RADIUS);
 		float len = length(pos);
 		vec2 dir = len > 0 ? normalize(pos) : pos;
-		maskVector[y*MASK_SZ + x] = dir * std::clamp(1-len, 0.0f, 1.0f);
+		maskVector[y*MASK_SZ + x] = vec4(dir * std::clamp(1-len, 0.0f, 1.0f), vec2(0,0));
 	}
 
-	Framebuffer::createTexture(maskTexture, GL_RGBA32F, GL_RG, 
+	Framebuffer::createTexture(maskTexture, GL_RGBA32F, GL_RGBA, 
 		GL_FLOAT, MASK_SZ, MASK_SZ, GL_LINEAR, GL_REPEAT, &maskVector[0]);
 
 	shader_drawLocation.setInt("maskTexture", 0);
@@ -24,8 +24,8 @@ void PlayerGroup::setupMask() {
 }
 
 void PlayerGroup::setupVelocityBuffer() {
-	vector<vec2> initial(VELOCITY_BUFFER_SZ * VELOCITY_BUFFER_SZ, vec2(0.5, 0.5));
-	Framebuffer::createTexture(velocityBuffer, GL_RGBA32F, GL_RG, GL_FLOAT, VELOCITY_BUFFER_SZ, VELOCITY_BUFFER_SZ,
+	vector<vec4> initial(VELOCITY_BUFFER_SZ * VELOCITY_BUFFER_SZ, vec4(0.5, 0.5, 0, 0));
+	Framebuffer::createTexture(velocityBuffer, GL_RGBA32F, GL_RGBA, GL_FLOAT, VELOCITY_BUFFER_SZ, VELOCITY_BUFFER_SZ,
 		GL_LINEAR, GL_CLAMP, &initial[0]);
 	glBindImageTexture(0, velocityBuffer, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 }
@@ -88,7 +88,12 @@ void PlayerGroup::drawLocations() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, maskTexture);
 	for (auto player : players) {
-		shader_drawLocation.setVec2("pos", vec2(player.getPosition().x, player.getPosition().z));
+		vec2 loc = vec2(
+				player.getPosition().x * getVelocityBufferSamplingScale().z + getVelocityBufferSamplingScale().x, 
+				player.getPosition().z * getVelocityBufferSamplingScale().w + getVelocityBufferSamplingScale().y
+			);
+		loc *= VELOCITY_BUFFER_SZ;
+		shader_drawLocation.setVec2("pos", loc);
 		glDispatchCompute(
 			MASK_SZ, 1, MASK_SZ);
 		glMemoryBarrier(GL_ALL_BARRIER_BITS);

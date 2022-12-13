@@ -20,6 +20,9 @@ class PlayerGroup {
 		void drawPlayers(Camera camera);
 		void drawLocations();
 		GLuint getVelocityBuffer() { return velocityBuffer; }
+		glm::vec4 getVelocityBufferSamplingScale() 
+			{ return glm::vec4(1/2.0f,1/2.0f,
+				float(1/AREA_COVERAGE),float(1/AREA_COVERAGE)); }
 	private:
         const int numPlayers = 1;
         ShaderProgram shader;
@@ -29,8 +32,9 @@ class PlayerGroup {
 		std::vector<Player> players;
 
 		const int VELOCITY_BUFFER_SZ = 1000;
-		const int MASK_RADIUS = 30;
+		const int MASK_RADIUS = 100;
 		const int MASK_SZ = MASK_RADIUS * 2 + 1;
+		const float AREA_COVERAGE = 100;
 
 		GLuint velocityBuffer;
 		GLuint maskTexture;

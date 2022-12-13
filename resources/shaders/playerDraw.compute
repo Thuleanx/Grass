@@ -17,7 +17,7 @@ void main() {
 	if (int(gl_GlobalInvocationID.x) >= MASK_SZ) return;
 	if (int(gl_GlobalInvocationID.z) >= MASK_SZ) return;
 
-	ivec2 focusPosition = ivec2(pos + VELOCITY_BUFFER_SZ/2);
+	ivec2 focusPosition = ivec2(pos);
 	ivec2 ipos = focusPosition + ivec2(gl_GlobalInvocationID.xz) - MASK_RADIUS;
 
 	if (ipos.x < 0 || ipos.y < 0 || ipos.x >= VELOCITY_BUFFER_SZ || ipos.y >= VELOCITY_BUFFER_SZ) return;
@@ -26,8 +26,8 @@ void main() {
 	// vec2 velocityAtMask = (imageLoad(maskBuffer, ivec2(gl_GlobalInvocationID.xz)).xy + 1)/2;
 	vec2 velocityAtMask = texture(maskTexture, gl_GlobalInvocationID.xz/float(2*MASK_RADIUS)).xy;
 
-	vec2 velocityToStore = len2(velocityAtMask) > len2(velocityAtIPos) ? 
-		mix(velocityAtIPos, velocityAtMask, 0.5) : velocityAtIPos;
+	vec2 velocityToStore = len2(velocityAtMask) > len2(velocityAtIPos) || len2(velocityAtMask) > 0.1 ? 
+		mix(velocityAtIPos, velocityAtMask, 0.05) : velocityAtIPos;
 
 	// the good old lerp
 	// imageStore(velocityBuffer, ipos, vec4(velocityAtMask != vec2(0,0) ? 1:0, 0, 0, 1));

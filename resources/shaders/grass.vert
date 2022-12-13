@@ -32,27 +32,36 @@ float windMacroFrequency = 0.3;
 float windMacroSpeed = 0.06;
 float windMacroAmplitude = 0.25;
 
-uniform vec4 focusPosition;
-uniform float partingRange;
+uniform sampler2D velocityBuffer;
+uniform vec4 velocityBuffer_samplingScale;
 
-void main() {
+void applyWind(inout vec4 posWS) {
 	float wind = cos(time * ((idHash >= 0.5 ? windFrequencyHi : windFrequencyLo) * (1+grassHeightIn/2)) +  idHash*0.5f);
 	wind = (wind*wind*windAmplitude)*uvIn.y*(1+grassHeightIn/2)*0.6;
 
 	float windMacro = uvIn.y * texture(windNoise, planeUV * windMacroFrequency + 
 		time * windMacroSpeed * normalize(windDirection)).r * windMacroAmplitude;
+	
+	posWS += (wind + windMacro) * vec4(windDirection.x, 0, windDirection.y, 0);
+}
 
-
-	posWS = vec4(posWSIn + (wind + windMacro) * vec3(windDirection.x, 0, windDirection.y),1);
-
+void applyParting(inout vec4 posWS) {
 	vec4 pivotPoint = vec4(rootWS,1);
-	vec2 displacement = pivotPoint.xz - focusPosition.xz;
-	float strength = saturate(1 - length(displacement) / partingRange);
 
-	posWS = 
-		rotateAroundAxis(cross( vec3(displacement.x, 0, displacement.y), vec3(0,1,0)), strength * 0.4 * M_PI) * 
+	vec2 away = texture(velocityBuffer, rootWS.xz 
+		* velocityBuffer_samplingScale.zw + velocityBuffer_samplingScale.xy).xy * 2 - 1;
+	float strength = length(away);
+
+	posWS = strength > 0 ?
+		rotateAroundAxis(cross( vec3(away.x,0,away.y), vec3(0,1,0)), strength * 0.4 * M_PI) * 
 		(posWS - pivotPoint) 
-		+ pivotPoint;
+		+ pivotPoint : posWS;
+}
+
+void main() {
+	posWS = vec4(posWSIn, 1);
+	applyWind(posWS);
+	applyParting(posWS);
 
 	normalWS = vec4(normalize(normalWSIn),0);
 	gl_Position = projMatrix * viewMatrix * posWS;

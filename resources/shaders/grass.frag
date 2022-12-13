@@ -16,6 +16,9 @@ uniform vec4 grassColorAmbientOcclusion;
 
 uniform vec4 grassColorOld;
 
+uniform sampler2D velocityBuffer;
+uniform vec4 velocityBuffer_samplingScale;
+
 float saturate(float a) {
 	return clamp(a,0,1);
 }
@@ -37,6 +40,7 @@ vec4 grassColor(vec4 tip, vec4 top, vec4 bot, vec4 ao) {
 vec4 blend(vec4 a, vec4 b) { return 1-(1-a)*(1-b); }
 
 void main() {
+	// fragColor = texture(velocityBuffer, posWS.xz * velocityBuffer_samplingScale.wz + velocityBuffer_samplingScale.xy);
 	vec4 col = saturate(grassColor(grassColorTip, grassColorTop, grassColorBottom, grassColorAmbientOcclusion));
 	vec4 colOld = blend(col, grassColorOld);
 	fragColor = mix(col, colOld, grassHeight * grassHeight * uv.y * uv.y);
