@@ -107,7 +107,8 @@ void GrassHandler::update(Camera &camera) {
 		glViewport(0, 0, screen_width, screen_height);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, default_screen);
+		// glBindTexture(GL_TEXTURE_2D, default_screen);
+		glBindTexture(GL_TEXTURE_2D, players.getVelocityBuffer());
 		// glBindTexture(GL_TEXTURE_2D, wind_noiseTexture);
 		Blit::blit(fbo_main);
 

@@ -20,6 +20,7 @@ class Player {
 
 		void drawPlayer();
 		glm::mat4 getCTM() const;
+		glm::vec3 getPosition() const;
 	private:
 		GLuint vao, vbo;
 		Sphere sphere;

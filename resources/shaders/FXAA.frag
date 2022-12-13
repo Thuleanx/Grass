@@ -1,6 +1,7 @@
 // https://github.com/choi303/FXAA
 #version 330 core
 #extension GL_EXT_gpu_shader4 : enable
+// #extension GL_ARB_texture_query_lod : enable
 
 in vec2 uv;
 
@@ -172,6 +173,10 @@ vec4 Fxaa(sampler2D tex, vec2 uv) {
 
 void main() {
 	// fragColor = texture(_MainTex, uv);
+// 	float mipmapLevel = 3;
+// #ifdef GL_ARB_texture_query_lod
+//     mipmapLevel = textureQueryLOD(_MainTex, textureCoord).x; // NOTE CAPITALIZATION
+// #endif
 	fragColor = Fxaa(_MainTex, uv);
 	fragColor.a = 1;
 }

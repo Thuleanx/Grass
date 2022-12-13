@@ -1,0 +1,32 @@
+#version 430
+layout(local_size_x = 8, local_size_y = 1, local_size_z = 8) in; 
+#include utils.compute
+layout(rgba32f, binding = 0) uniform image2D velocityBuffer;
+layout(rgba32f, binding = 1) uniform image2D maskBuffer;
+
+const int VELOCITY_BUFFER_SZ = 1000;
+const int MASK_RADIUS = 30;
+const int MASK_SZ = MASK_RADIUS * 2 + 1;
+
+uniform vec2 pos; // world pos
+uniform sampler2D mask;
+
+void main() {
+	if (int(gl_GlobalInvocationID.x) >= MASK_SZ) return;
+	if (int(gl_GlobalInvocationID.z) >= MASK_SZ) return;
+
+	ivec2 focusPosition = ivec2(pos + VELOCITY_BUFFER_SZ/2);
+	ivec2 ipos = focusPosition + ivec2(gl_GlobalInvocationID.xz) - MASK_RADIUS;
+
+	if (ipos.x < 0 || ipos.y < 0 || ipos.x >= VELOCITY_BUFFER_SZ || ipos.y >= VELOCITY_BUFFER_SZ) return;
+
+	vec2 velocityAtIPos = imageLoad(velocityBuffer, ipos).xy;
+	vec2 velocityAtMask = (imageLoad(maskBuffer, ivec2(gl_GlobalInvocationID.xz)).xy + 1)/2;
+
+	vec2 velocityToStore = velocityAtMask != vec2(0,0) ? mix(velocityAtIPos, velocityAtMask, 0.5) : velocityAtIPos;
+
+	// the good old lerp
+	// imageStore(velocityBuffer, ipos, vec4(velocityAtMask != vec2(0,0) ? 1:0, 0, 0, 1));
+	imageStore(velocityBuffer, ipos, vec4(velocityToStore, 0, 1));
+	// imageStore(velocityBuffer, ipos, vec4(1, 0, 0, 1));
+}

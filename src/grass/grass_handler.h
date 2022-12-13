@@ -32,7 +32,7 @@ class GrassHandler {
 		ShaderProgram shader_compute_grass;
 		ShaderProgram shader_compute_windNoise;
 		int screen_width, screen_height;
-		int fbo_width, fbo_height;
+		int fbo_width = 100, fbo_height = 100;
 
 		GLuint vao;
 		GLuint vertexDataBuffer;

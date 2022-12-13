@@ -10,6 +10,7 @@ GLenum ErrorHandler::errorCheck(std::string msg)
 	{
 		string = gluErrorString(code);
 		fprintf(stderr, "OpenGL error: %s %s\n", string, msg.c_str());
+		fflush(stderr);
 	}
 	return code;
 }

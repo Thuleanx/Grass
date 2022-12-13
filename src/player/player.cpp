@@ -57,3 +57,5 @@ mat4 Player::getCTM() const {
 	);
 	return T;
 }
+
+vec3 Player::getPosition() const { return pos; }

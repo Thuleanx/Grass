@@ -18,9 +18,23 @@ class PlayerGroup {
 		Player& getMainPlayer();
 
 		void drawPlayers(Camera camera);
+		void drawLocations();
+		GLuint getVelocityBuffer() { return velocityBuffer; }
 	private:
         const int numPlayers = 1;
         ShaderProgram shader;
+
+        ShaderProgram shader_drawLocation;
+
 		std::vector<Player> players;
 
+		const int VELOCITY_BUFFER_SZ = 1000;
+		const int MASK_RADIUS = 30;
+		const int MASK_SZ = MASK_RADIUS * 2 + 1;
+
+		GLuint velocityBuffer;
+		GLuint maskTexture;
+
+		void setupMask();
+		void setupVelocityBuffer();
 };
