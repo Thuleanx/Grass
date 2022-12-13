@@ -151,6 +151,10 @@ void MainWindow::initialize()
 	createSliderDouble(vLayout, bladeHeightScaleSlider, bladeHeightScaleBox,
 					   1, 1, 100, 10,
                        0.1f, 0.1f, 10.0f, 1.0f, settings.bladeHeightScale);
+	createLabel(vLayout, "Parting Range");
+	createSliderDouble(vLayout, partingRangeSlider, partingRangeBox,
+					   1, 1, 100, 10,
+                       0.1f, 0.1f, 10.0f, 1.0f, settings.partingRange);
 
 	realtime->settingsChanged();
 }

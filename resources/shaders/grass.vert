@@ -33,6 +33,7 @@ float windMacroSpeed = 0.06;
 float windMacroAmplitude = 0.25;
 
 uniform vec4 focusPosition;
+uniform float partingRange;
 
 void main() {
 	float wind = cos(time * ((idHash >= 0.5 ? windFrequencyHi : windFrequencyLo) * (1+grassHeightIn/2)) +  idHash*0.5f);
@@ -45,11 +46,11 @@ void main() {
 	posWS = vec4(posWSIn + (wind + windMacro) * vec3(windDirection.x, 0, windDirection.y),1);
 
 	vec4 pivotPoint = vec4(rootWS,1);
-	pivotPoint.y = 0;
-	float strength = saturate(1 - length(focusPosition - pivotPoint) / 10);
+	vec2 displacement = pivotPoint.xz - focusPosition.xz;
+	float strength = saturate(1 - length(displacement) / partingRange);
 
 	posWS = 
-		rotateAroundAxis(-cross( vec3(focusPosition - pivotPoint), vec3(0,1,0)), strength * 1) * 
+		rotateAroundAxis(cross( vec3(displacement.x, 0, displacement.y), vec3(0,1,0)), strength * 0.4 * M_PI) * 
 		(posWS - pivotPoint) 
 		+ pivotPoint;
 

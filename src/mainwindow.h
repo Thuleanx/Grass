@@ -40,6 +40,9 @@ private:
 	QSlider *bladeHeightScaleSlider;
 	QDoubleSpinBox *bladeHeightScaleBox;
 
+	QSlider *partingRangeSlider;
+	QDoubleSpinBox *partingRangeBox;
+
     QSlider *nearSlider;
     QSlider *farSlider;
     QDoubleSpinBox *nearBox;

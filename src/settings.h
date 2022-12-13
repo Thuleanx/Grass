@@ -27,6 +27,8 @@ struct Settings {
 	float hillHeightMax = 2.0f;
 	float hillHeightNoiseScale = 0.01f;
 
+	float partingRange = 2;
+
 	bool applyFXAA = false;
 
 	std::string grassColorTip = "#6e5181";

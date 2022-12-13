@@ -69,6 +69,9 @@ void GrassHandler::onSettingsChanged() {
 	destroyVAOVBO();
 	initVAOVBO();
 	generateGrass();
+	shader_default.useProgram();
+	loadGrassData(shader_default);
+	shader_default.detach();
 
 	ErrorHandler::errorCheck("-- on settings changed");
 }

@@ -82,5 +82,8 @@ void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 
 	vec4 clearCol = hexToColor(settings.clearColor);
 
+	shader.setFloat("partingRange", settings.partingRange);
+
 	glClearColor(clearCol.r, clearCol.g, clearCol.b, clearCol.a);
+
 }
