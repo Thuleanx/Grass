@@ -46,6 +46,8 @@ void GrassHandler::awake(RenderData &renderData) {
 
 	ErrorHandler::errorCheck("-- on awake");
 	startTime = clock();
+
+	players.awake();
 }
 
 void GrassHandler::onResize(int screen_width, int screen_height, 
@@ -72,6 +74,7 @@ void GrassHandler::onSettingsChanged() {
 }
 
 void GrassHandler::update(Camera &camera) {
+	players.update();
 	rawPass: {
 		shader_default.useProgram();
 		shader_default.setFloat("time", float(clock()-startTime) / CLOCKS_PER_SEC);
@@ -89,6 +92,8 @@ void GrassHandler::update(Camera &camera) {
 		// glBindTexture(GL_TEXTURE_2D, 0);
 		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade() * numGrassBlades() * 3);
 		glBindVertexArray(0);
+
+		players.drawPlayers(camera);
 	}
 
 	ErrorHandler::errorCheck("-- rendering raw pass");
@@ -118,4 +123,5 @@ void GrassHandler::onDestroy() {
 	destroyVAOVBO();
 	destroyFramebuffers();
 	destroyWindTexture();
+	players.destroy();
 }

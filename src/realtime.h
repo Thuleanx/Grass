@@ -18,6 +18,7 @@
 #include "shapes/iShape.h"
 #include "camera/camera.h"
 #include "grass/grass_handler.h"
+#include "player/player.h"
 
 class Realtime : public QOpenGLWidget
 {

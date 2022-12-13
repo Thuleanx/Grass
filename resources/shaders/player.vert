@@ -11,7 +11,7 @@ uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 
 void main() {
-	posWS = modelMatrix * normalWS;
+	posWS = modelMatrix * vec4(posOS,1);
 	normalWS = normalize(modelMatrix * vec4(normalOS,0));
 	gl_Position = projMatrix * viewMatrix * posWS;
 }

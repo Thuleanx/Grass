@@ -155,12 +155,20 @@ void Realtime::timerEvent(QTimerEvent *event) {
 	float moveSpeed = 5;
     m_elapsedTimer.restart();
 
-    // Use deltaTime and m_keyMap here to move around
+    //Use deltaTime and m_keyMap here to move around
     t_camera.translate(vec3(
-		m_keyMap[Qt::Key_D] - m_keyMap[Qt::Key_A], 
-		m_keyMap[Qt::Key_W] - m_keyMap[Qt::Key_S],
+		// m_keyMap[Qt::Key_D] - m_keyMap[Qt::Key_A], 
+		// m_keyMap[Qt::Key_W] - m_keyMap[Qt::Key_S],
+		0, 0,
         m_keyMap[Qt::Key_Space] - m_keyMap[Qt::Key_Control]
 	) * deltaTime * moveSpeed);
+	grass.players.getMainPlayer().move(
+		vec2(
+			m_keyMap[Qt::Key_D] - m_keyMap[Qt::Key_A], 
+            m_keyMap[Qt::Key_W] - m_keyMap[Qt::Key_S]
+        ) * deltaTime,
+        t_camera
+	);
 
     update(); // asks for a PaintGL() call to occur
 }

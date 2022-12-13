@@ -7,9 +7,8 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <vector>
-#include "shapes/iShape.h"
+#include "shapes/Sphere.h"
 #include "camera/camera.h"
-#include "t_utils/ShaderProgram.h"
 
 class Player {
 	public: 
@@ -18,12 +17,14 @@ class Player {
 		void destroy();
 
 		void move(glm::vec2 displacement, Camera camera);
-	private:
-		GLuint vao, vbo;
-		iShape *shape;
-		glm::vec3 pos;
-		ShaderProgram shader;
 
 		void drawPlayer();
-		glm::mat4 getCTM();
+		glm::mat4 getCTM() const;
+	private:
+		GLuint vao, vbo;
+		Sphere sphere;
+		glm::vec3 pos = glm::vec3(0,4,0);
+
+		glm::vec3 size = glm::vec3(2,4,2);
+		float moveSpeed = 6;
 };

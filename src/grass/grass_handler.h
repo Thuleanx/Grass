@@ -10,11 +10,14 @@
 #include "utils/sceneparser.h"
 #include "t_utils/Framebuffer.h"
 #include "t_utils/ShaderProgram.h"
+#include "player/player.h"
+#include "player/player_group.h"
 #include "camera/camera.h"
 #include "settings.h"
 
 class GrassHandler {
 	public: 
+		PlayerGroup players;
 		void awake(RenderData &renderData);
 		void onResize(int screen_width, int screen_height, 
 			int fbo_width, int fbo_height);

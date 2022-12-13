@@ -29,6 +29,8 @@ add_executable(${PROJECT_NAME}
 
     src/player/player.cpp
     src/player/player.h
+    src/player/player_group.cpp
+    src/player/player_group.h
 
     src/grass/grass_handler_blit.cpp
     src/grass/grass_handler_shaders.cpp
