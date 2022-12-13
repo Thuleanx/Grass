@@ -9,6 +9,8 @@
 // You can either implement and use these getters, or make your own design.
 // If you decide to make your own design, feel free to delete these as TAs won't rely on them to grade your assignments.
 
+class Player;
+
 class Camera {
 public:
 	Camera();
@@ -52,8 +54,8 @@ public:
 	void recalculateView();
 	void recalculateProj();
 
-	void translate(glm::vec3 movement);
-	void rotate(glm::vec2 movement);
+	void translate(glm::vec3 movement, const Player &player);
+	void rotate(glm::vec2 movement, const Player &player);
 
 private:
 	glm::mat4 view, viewInv, proj;

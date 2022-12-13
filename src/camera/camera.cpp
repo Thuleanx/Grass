@@ -4,6 +4,7 @@
 #include <glm/gtx/transform.hpp>
 #include "glm/gtc/matrix_transform.hpp"
 #include "settings.h"
+#include "player/player.h"
 using namespace glm;
 using namespace std;
 
@@ -118,11 +119,11 @@ vec3 flatten(vec3 v) {
 	v.y = 0;
 	return v;
 }
-void Camera::translate(vec3 movement) {
+void Camera::translate(vec3 movement, const Player &player) {
 	pos += 
-		normalize(flatten(look)) * movement.y + 
+		(normalize(flatten(look)) * movement.y + 
 		normalize(flatten(cross(look, up))) * movement.x + 
-		movement.z * vec3(0,1,0);
+        movement.z * look * 0.2f) * player.moveSpeed;
 	recalculateView();
 }
 
@@ -144,8 +145,9 @@ mat3 rotateAround(vec3 u, float theta) {
 	);
 }
 
-void Camera::rotate(vec2 movement) {
+void Camera::rotate(vec2 movement, const Player &player) {
 	mat3 rot = rotateAround(vec3(0,1,0), movement.x) * rotateAround(cross(look, up), movement.y);
+	pos = rot * (pos - player.getPosition()) + player.getPosition();
     look = rot*look;
     up = rot*up;
 	recalculateView();

@@ -142,7 +142,7 @@ void Realtime::mouseMoveEvent(QMouseEvent *event) {
 
         // Use deltaX and deltaY here to rotate
 		if (m_mouseDown) {
-			t_camera.rotate(-vec2(speedX * deltaX, speedY * deltaY));
+            t_camera.rotate(-vec2(speedX * deltaX, speedY * deltaY),  grass.players.getMainPlayer());
 		}
 
         update(); // asks for a PaintGL() call to occur
@@ -157,11 +157,11 @@ void Realtime::timerEvent(QTimerEvent *event) {
 
     //Use deltaTime and m_keyMap here to move around
     t_camera.translate(vec3(
-		// m_keyMap[Qt::Key_D] - m_keyMap[Qt::Key_A], 
-		// m_keyMap[Qt::Key_W] - m_keyMap[Qt::Key_S],
-		0,0,
+		m_keyMap[Qt::Key_D] - m_keyMap[Qt::Key_A], 
+		m_keyMap[Qt::Key_W] - m_keyMap[Qt::Key_S],
+		// 0,0,
         m_keyMap[Qt::Key_Space] - m_keyMap[Qt::Key_Control]
-	) * deltaTime * moveSpeed);
+	) * deltaTime, grass.players.getMainPlayer());
 	grass.players.getMainPlayer().move(
 		vec2(
 			m_keyMap[Qt::Key_D] - m_keyMap[Qt::Key_A], 

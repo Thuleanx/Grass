@@ -16,6 +16,7 @@ class Player {
 		void update();
 		void destroy();
 
+		float moveSpeed = 6;
 		void move(glm::vec2 displacement, Camera camera);
 
 		void drawPlayer();
@@ -27,5 +28,4 @@ class Player {
 		glm::vec3 pos = glm::vec3(0,4,0);
 
 		glm::vec3 size = glm::vec3(2,4,2);
-		float moveSpeed = 6;
 };

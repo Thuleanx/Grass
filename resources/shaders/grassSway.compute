@@ -1,0 +1,12 @@
+#version 430
+layout(local_size_x = 8, local_size_y = 1, local_size_z = 8) in; 
+#include utils.compute
+layout(rgba32f, binding = 0) uniform image2D velocityBuffer;
+
+const int VELOCITY_BUFFER_SZ = 1000;
+
+void main() {
+	if (int(gl_GlobalInvocationID.x) >= VELOCITY_BUFFER_SZ) return;
+	if (int(gl_GlobalInvocationID.z) >= VELOCITY_BUFFER_SZ) return;
+
+}

@@ -27,7 +27,7 @@ void main() {
 	vec2 velocityAtMask = texture(maskTexture, gl_GlobalInvocationID.xz/float(2*MASK_RADIUS)).xy;
 
 	vec2 velocityToStore = len2(velocityAtMask) > len2(velocityAtIPos) || len2(velocityAtMask) > 0.1 ? 
-		mix(velocityAtIPos, velocityAtMask, 0.05) : velocityAtIPos;
+		mix(velocityAtIPos, velocityAtMask, 0.2) : velocityAtIPos;
 
 	// the good old lerp
 	// imageStore(velocityBuffer, ipos, vec4(velocityAtMask != vec2(0,0) ? 1:0, 0, 0, 1));
