@@ -2,14 +2,16 @@
 layout(local_size_x = 8, local_size_y = 1, local_size_z = 8) in; 
 #include utils.compute
 layout(rgba32f, binding = 0) uniform image2D velocityBuffer;
-layout(rgba32f, binding = 1) uniform image2D maskBuffer;
+// layout(rgba32f, binding = 1) uniform image2D maskBuffer;
 
 const int VELOCITY_BUFFER_SZ = 1000;
 const int MASK_RADIUS = 30;
 const int MASK_SZ = MASK_RADIUS * 2 + 1;
 
 uniform vec2 pos; // world pos
-uniform sampler2D mask;
+uniform sampler2D maskTexture;
+
+float len2(vec2 v) { return dot(v,v);}
 
 void main() {
 	if (int(gl_GlobalInvocationID.x) >= MASK_SZ) return;
@@ -20,13 +22,15 @@ void main() {
 
 	if (ipos.x < 0 || ipos.y < 0 || ipos.x >= VELOCITY_BUFFER_SZ || ipos.y >= VELOCITY_BUFFER_SZ) return;
 
-	vec2 velocityAtIPos = imageLoad(velocityBuffer, ipos).xy;
-	vec2 velocityAtMask = (imageLoad(maskBuffer, ivec2(gl_GlobalInvocationID.xz)).xy + 1)/2;
+	vec2 velocityAtIPos = imageLoad(velocityBuffer, ipos).xy * 2 - 1;
+	// vec2 velocityAtMask = (imageLoad(maskBuffer, ivec2(gl_GlobalInvocationID.xz)).xy + 1)/2;
+	vec2 velocityAtMask = texture(maskTexture, gl_GlobalInvocationID.xz/float(2*MASK_RADIUS)).xy;
 
-	vec2 velocityToStore = velocityAtMask != vec2(0,0) ? mix(velocityAtIPos, velocityAtMask, 0.5) : velocityAtIPos;
+	vec2 velocityToStore = len2(velocityAtMask) > len2(velocityAtIPos) ? 
+		mix(velocityAtIPos, velocityAtMask, 0.5) : velocityAtIPos;
 
 	// the good old lerp
 	// imageStore(velocityBuffer, ipos, vec4(velocityAtMask != vec2(0,0) ? 1:0, 0, 0, 1));
-	imageStore(velocityBuffer, ipos, vec4(velocityToStore, 0, 1));
+	imageStore(velocityBuffer, ipos, vec4((velocityToStore + 1)/2, 0, 1));
 	// imageStore(velocityBuffer, ipos, vec4(1, 0, 0, 1));
 }

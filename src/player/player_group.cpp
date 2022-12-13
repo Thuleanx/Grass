@@ -17,9 +17,10 @@ void PlayerGroup::setupMask() {
 	}
 
 	Framebuffer::createTexture(maskTexture, GL_RGBA32F, GL_RG, 
-		GL_FLOAT, MASK_SZ, MASK_SZ, GL_NEAREST, GL_REPEAT, &maskVector[0]);
+		GL_FLOAT, MASK_SZ, MASK_SZ, GL_LINEAR, GL_REPEAT, &maskVector[0]);
 
-	glBindImageTexture(1, maskTexture, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+	shader_drawLocation.setInt("maskTexture", 0);
+	// glBindImageTexture(1, maskTexture, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
 }
 
 void PlayerGroup::setupVelocityBuffer() {
@@ -84,6 +85,8 @@ void PlayerGroup::drawPlayers(Camera camera) {
 
 void PlayerGroup::drawLocations() {
 	shader_drawLocation.useProgram();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, maskTexture);
 	for (auto player : players) {
 		shader_drawLocation.setVec2("pos", vec2(player.getPosition().x, player.getPosition().z));
 		glDispatchCompute(
