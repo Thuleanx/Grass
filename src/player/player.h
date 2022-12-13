@@ -22,10 +22,11 @@ class Player {
 		void drawPlayer();
 		glm::mat4 getCTM() const;
 		glm::vec3 getPosition() const;
+		glm::vec3 getVelocity() const { return velocity; }
 	private:
 		GLuint vao, vbo;
 		Sphere sphere;
-		glm::vec3 pos = glm::vec3(0,4,0);
-
-		glm::vec3 size = glm::vec3(2,4,2);
+		glm::vec3 pos = glm::vec3(0,2,0);
+		glm::vec3 size = glm::vec3(2,2,2);
+		glm::vec3 velocity;
 };

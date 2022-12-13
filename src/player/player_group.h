@@ -26,8 +26,8 @@ class PlayerGroup {
 	private:
         const int numPlayers = 1;
         ShaderProgram shader;
-
         ShaderProgram shader_drawLocation;
+        ShaderProgram shader_updateVelocityBuffer;
 
 		std::vector<Player> players;
 
@@ -41,4 +41,5 @@ class PlayerGroup {
 
 		void setupMask();
 		void setupVelocityBuffer();
+		void updateVelocityBuffer();
 };

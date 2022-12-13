@@ -8,12 +8,19 @@ using namespace glm;
 
 void PlayerGroup::setupMask() {
 	vector<vec4> maskVector(MASK_SZ * MASK_SZ);
+	float mid = 0.2;
 	f(x,0,MASK_SZ) f(y,0,MASK_SZ) {
 		vec2 origin = vec2(MASK_RADIUS, MASK_RADIUS);
 		vec2 pos = (vec2(x,y) - origin) / float(MASK_RADIUS);
+
 		float len = length(pos);
-		vec2 dir = len > 0 ? normalize(pos) : pos;
-		maskVector[y*MASK_SZ + x] = vec4(dir * std::clamp(1-len, 0.0f, 1.0f), vec2(0,0));
+
+		vec2 dir = len > 0 ? normalize(pos) : vec2(1,1);
+
+		float strength = std::clamp(mid + 1 - len, 0.0f, 1.0f);
+
+		strength = strength*strength;
+		maskVector[y*MASK_SZ + x] = vec4(dir * strength, vec2(0,0));
 	}
 
 	Framebuffer::createTexture(maskTexture, GL_RGBA32F, GL_RGBA, 
@@ -40,9 +47,15 @@ void PlayerGroup::awake() {
 	f(i,0,numPlayers)
 		players[i].awake();
 
+cout << "COMPILING" << endl;
 	shader_drawLocation.initializeProgram();
 	shader_drawLocation.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/playerDraw.compute");
 	shader_drawLocation.finalizeProgram();
+
+cout << "COMPILING" << endl;
+	shader_updateVelocityBuffer.initializeProgram();
+	shader_updateVelocityBuffer.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/grassSway.compute");
+	shader_updateVelocityBuffer.finalizeProgram();
 
 	shader_drawLocation.useProgram();
 	setupMask();
@@ -50,12 +63,17 @@ void PlayerGroup::awake() {
 	setupVelocityBuffer();
 	ErrorHandler::errorCheck("-- on gen velocity buffer");
 	shader_drawLocation.detach();
+
+	shader_updateVelocityBuffer.useProgram();
+	glBindImageTexture(0, velocityBuffer, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+	shader_updateVelocityBuffer.detach();
 }
 
 void PlayerGroup::update() {
 	f(i,0,numPlayers)
 		players[i].update();
 	drawLocations();
+	updateVelocityBuffer();
 }
 
 void PlayerGroup::destroy() {
@@ -87,6 +105,8 @@ void PlayerGroup::drawLocations() {
 	shader_drawLocation.useProgram();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, maskTexture);
+
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	for (auto player : players) {
 		vec2 loc = vec2(
 				player.getPosition().x * getVelocityBufferSamplingScale().z + getVelocityBufferSamplingScale().x, 
@@ -94,9 +114,17 @@ void PlayerGroup::drawLocations() {
 			);
 		loc *= VELOCITY_BUFFER_SZ;
 		shader_drawLocation.setVec2("pos", loc);
+		shader_drawLocation.setVec3("playerVelocity", player.getVelocity());
 		glDispatchCompute(
-			MASK_SZ, 1, MASK_SZ);
+			ceil(MASK_SZ / 8.00f), 1, ceil(MASK_SZ / 8.00f));
 		glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	}
 	shader_drawLocation.detach();
+}
+
+void PlayerGroup::updateVelocityBuffer() {
+	shader_updateVelocityBuffer.useProgram();
+	glDispatchCompute(
+		ceil(VELOCITY_BUFFER_SZ / 8.00f), 1, ceil(VELOCITY_BUFFER_SZ / 8.00f));
+	shader_updateVelocityBuffer.detach();
 }

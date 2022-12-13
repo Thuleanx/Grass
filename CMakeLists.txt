@@ -99,6 +99,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     PREFIX
         "/"
     FILES
+        resources/shaders/grassSway.compute
         resources/shaders/playerDraw.compute
         resources/shaders/player.frag
         resources/shaders/player.vert

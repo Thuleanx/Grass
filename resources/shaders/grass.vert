@@ -53,7 +53,7 @@ void applyParting(inout vec4 posWS) {
 	float strength = length(away);
 
 	posWS = strength > 0 ?
-		rotateAroundAxis(cross( vec3(away.x,0,away.y), vec3(0,1,0)), strength * 0.4 * M_PI) * 
+		rotateAroundAxis(cross( vec3(away.x,0,away.y), vec3(0,1,0)), strength * 0.6 * M_PI) * 
 		(posWS - pivotPoint) 
 		+ pivotPoint : posWS;
 }

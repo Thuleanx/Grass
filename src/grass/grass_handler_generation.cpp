@@ -114,7 +114,8 @@ void GrassHandler::generateWindTexture() {
 	ErrorHandler::errorCheck("-- on gen texture");
 
 	glDispatchCompute(
-		WIND_NOISE_TEXTURE_SZ, WIND_NOISE_TEXTURE_SZ, 1);
+		ceil(WIND_NOISE_TEXTURE_SZ/workGroupSz.x), 
+		ceil(WIND_NOISE_TEXTURE_SZ/workGroupSz.x), 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
 	ErrorHandler::errorCheck("-- on dispatch");

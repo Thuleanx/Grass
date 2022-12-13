@@ -7,6 +7,12 @@ const int VELOCITY_BUFFER_SZ = 1000;
 
 void main() {
 	if (int(gl_GlobalInvocationID.x) >= VELOCITY_BUFFER_SZ) return;
-	if (int(gl_GlobalInvocationID.z) >= VELOCITY_BUFFER_SZ) return;
+	if (int(gl_GlobalInvocationID.y) >= VELOCITY_BUFFER_SZ) return;
 
+	ivec2 ipos = ivec2(gl_GlobalInvocationID.xz);
+
+	vec4 grassSway = imageLoad(velocityBuffer, ipos) * 2 - 1;
+	grassSway.xy = mix(grassSway.xy, vec2(0,0), 0.02);
+
+	imageStore(velocityBuffer, ipos, (grassSway + 1) / 2);
 }

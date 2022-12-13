@@ -10,7 +10,7 @@ void Player::drawPlayer() {
 }
 
 void Player::awake() {
-	sphere.updateParams(1,1);
+	sphere.updateParams(15,15);
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
@@ -46,13 +46,17 @@ void Player::move(vec2 displacement, Camera camera) {
 	forward = normalize(forward) * displacement.y;
 	right = normalize(right) * displacement.x;
 	pos += forward + right;
+
+	if (length(displacement))
+		velocity = normalize(forward + right) * moveSpeed;
+	else velocity = vec3(0,0,0);
 }
 
 mat4 Player::getCTM() const {
 	mat4 T = mat4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
+		size.x, 0, 0, 0,
+		0, size.y, 0, 0,
+		0, 0, size.z, 0,
 		pos.x, pos.y, pos.z, 1
 	);
 	return T;
