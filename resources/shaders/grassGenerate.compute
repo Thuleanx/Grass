@@ -9,6 +9,8 @@ struct DrawVertex {
 	float grassHeight; // 7
 	vec2 uv; // 8
 	vec2 planeUV; // 10
+	vec3 rootWS; // 12
+	float padding; 
 };
 
 struct DrawTriangle {
@@ -105,6 +107,7 @@ void createBlade(
 			blade[i].vertices[j].grassHeight = grassHeight;
 			blade[i].vertices[j].planeUV = 
 				gl_GlobalInvocationID.xz * vec2(1.00/(2*bladeCntX), 1.00/(2*bladeCntZ));
+			blade[i].vertices[j].rootWS = posWS;
 		}
 	}
 }

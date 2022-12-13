@@ -41,7 +41,7 @@ class GrassHandler {
 		GLuint default_screen_depth;
 		GLuint wind_noiseTexture;
 
-		const int vertexOutputSizeBytes = 12;
+		const int vertexOutputSizeBytes = 16;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
 		const int WIND_NOISE_TEXTURE_SZ = 800;
 

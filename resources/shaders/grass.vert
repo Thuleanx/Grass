@@ -1,4 +1,5 @@
 #version 330 core
+#include utils.compute
 
 layout (location = 0) in vec3 posWSIn;
 layout (location = 1) in vec3 normalWSIn;
@@ -6,6 +7,7 @@ layout (location = 2) in vec2 uvIn;
 layout (location = 3) in vec2 planeUV;
 layout (location = 4) in float idHash;
 layout (location = 5) in float grassHeightIn;
+layout (location = 6) in vec3 rootWS;
 
 out vec4 posWS;
 out vec4 normalWS;
@@ -30,6 +32,8 @@ float windMacroFrequency = 0.3;
 float windMacroSpeed = 0.06;
 float windMacroAmplitude = 0.25;
 
+uniform vec4 focusPosition;
+
 void main() {
 	float wind = cos(time * ((idHash >= 0.5 ? windFrequencyHi : windFrequencyLo) * (1+grassHeightIn/2)) +  idHash*0.5f);
 	wind = (wind*wind*windAmplitude)*uvIn.y*(1+grassHeightIn/2)*0.6;
@@ -37,7 +41,18 @@ void main() {
 	float windMacro = uvIn.y * texture(windNoise, planeUV * windMacroFrequency + 
 		time * windMacroSpeed * normalize(windDirection)).r * windMacroAmplitude;
 
+
 	posWS = vec4(posWSIn + (wind + windMacro) * vec3(windDirection.x, 0, windDirection.y),1);
+
+	vec4 pivotPoint = vec4(rootWS,1);
+	pivotPoint.y = 0;
+	float strength = saturate(1 - length(focusPosition - pivotPoint) / 10);
+
+	posWS = 
+		rotateAroundAxis(-cross( vec3(focusPosition - pivotPoint), vec3(0,1,0)), strength * 1) * 
+		(posWS - pivotPoint) 
+		+ pivotPoint;
+
 	normalWS = vec4(normalize(normalWSIn),0);
 	gl_Position = projMatrix * viewMatrix * posWS;
 	grassHeight = grassHeightIn;

@@ -114,8 +114,15 @@ void Camera::recalculateProj() {
     proj = remap * A * B;
 }
 
+vec3 flatten(vec3 v) {
+	v.y = 0;
+	return v;
+}
 void Camera::translate(vec3 movement) {
-	pos += normalize(look) * movement.y + normalize(cross(look, up)) * movement.x + movement.z * vec3(0,1,0);
+	pos += 
+		normalize(flatten(look)) * movement.y + 
+		normalize(flatten(cross(look, up))) * movement.x + 
+		movement.z * vec3(0,1,0);
 	recalculateView();
 }
 
