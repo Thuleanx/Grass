@@ -7,6 +7,7 @@
 
 struct Settings {
 	int bladeCnt = 1;
+	int chunking = 0;
 	float density = 1;
     float nearPlane = 1;
     float farPlane = 1;
@@ -36,7 +37,6 @@ struct Settings {
 	std::string grassColorTop = "#6f1d5c";
 	std::string grassColorBottom = "#4f1446";
 	std::string grassColorAmbientOcclusion = "#2e0a30";
-
 	std::string grassColorOld = "#6ceded";
 
 	std::string clearColor = "#0d001a";

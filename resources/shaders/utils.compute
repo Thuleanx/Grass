@@ -7,6 +7,7 @@ vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
 
 float saturate(float a) { return clamp(a,0,1); }
+vec2 saturate(vec2 a) { return vec2(saturate(a.x), saturate(a.y)); }
 
 float snoise(vec2 v){
 const vec4 C = vec4(0.211324865405187, 0.366025403784439,

@@ -105,7 +105,13 @@ void GrassHandler::update(Camera &camera) {
 
 		glBindVertexArray(vao);
 		// glBindTexture(GL_TEXTURE_2D, 0);
-		glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade() * numGrassBlades() * 3);
+		vec2 chunkSz = vec2(settings.bladeCnt / settings.density) * 2.0f;
+		f(dx,-settings.chunking,settings.chunking+1)
+		f(dy,-settings.chunking,settings.chunking+1) {
+			vec2 displacement = chunkSz * vec2(dx,dy);
+			shader_default.setVec3("displacement", vec3(displacement.x, 0, displacement.y));
+			glDrawArrays(GL_TRIANGLES, 0, trianglesPerBlade() * numGrassBlades() * 3);
+		}
 		glBindVertexArray(0);
 
 		players.drawPlayers(camera);

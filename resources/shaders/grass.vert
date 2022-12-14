@@ -28,7 +28,7 @@ float windFrequencyLo = 0.5;
 float windFrequencyHi = 0.2;
 float windAmplitude = 0.65*0.3;
 
-float windMacroFrequency = 0.3;
+float windMacroFrequency = 0.03;
 float windMacroSpeed = 0.06;
 float windMacroAmplitude = 0.25;
 
@@ -38,6 +38,8 @@ uniform vec4 velocityBuffer_samplingScale;
 uniform sampler2D hillMap;
 uniform float hillHeightNoiseScale;
 uniform float hillHeightMax;
+
+uniform vec3 displacement;
 
 void applyWind(inout vec4 posWS) {
 	float wind = cos(time * ((idHash >= 0.5 ? windFrequencyHi : windFrequencyLo) * (1+grassHeightIn/2)) +  idHash*0.5f);
@@ -52,8 +54,8 @@ void applyWind(inout vec4 posWS) {
 void applyParting(inout vec4 posWS) {
 	vec4 pivotPoint = vec4(rootWS,1);
 
-	vec2 away = texture(velocityBuffer, rootWS.xz 
-		* velocityBuffer_samplingScale.zw + velocityBuffer_samplingScale.xy).xy * 2 - 1;
+	vec2 away = texture(velocityBuffer, 
+		saturate(rootWS.xz * velocityBuffer_samplingScale.zw + velocityBuffer_samplingScale.xy)).xy * 2 - 1;
 	float strength = length(away);
 
 	posWS = strength > 0 ?
@@ -63,7 +65,7 @@ void applyParting(inout vec4 posWS) {
 }
 
 void main() {
-	posWS = vec4(posWSIn, 1);
+	posWS = vec4(posWSIn + displacement, 1);
 	applyWind(posWS);
 	applyParting(posWS);
 	posWS += vec4(0,1,0,0) * (texture(hillMap, rootWS.xz * hillHeightNoiseScale).x * hillHeightMax);
