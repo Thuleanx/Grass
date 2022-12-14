@@ -43,15 +43,20 @@ private:
 	QSlider *bladeSegmentCntSlider;
 	QSpinBox *bladeSegmentCntBox;
 
+	QCheckBox *applyPosWidthVariance;
+	QCheckBox *applyHeightVariance;
+
+	QSlider *hillHeightSlider;
+	QDoubleSpinBox *hillHeightBox;
+
 	QPushButton *forceRedrawButton;
 
-	// color
 
-	// randomize locations
-
-	// randomize height
-
-	// randomize 
+	QCheckBox *applyColorVariance;
+	QCheckBox *applyColor;
+	QCheckBox *applyWind;
+	QCheckBox *drawPlayer;
+	QCheckBox *drawFriends;
 
 
     // QSlider *nearSlider;

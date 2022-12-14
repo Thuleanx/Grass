@@ -154,8 +154,8 @@ void PlayerGroup::updateVelocityBuffer(vec2 time) {
 
 
 void PlayerGroup::onSettingsChanged() {
-	shader_drawLocation.useProgram();
-	shader_drawLocation.setFloat("hillHeightMax", settings.hillHeightMax);
-	shader_drawLocation.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
-	shader_drawLocation.detach();
+	shader.useProgram();
+	shader.setFloat("hillHeightMax", settings.hillHeightMax);
+	shader.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
+	shader.detach();
 }

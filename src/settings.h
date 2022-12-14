@@ -49,7 +49,6 @@ struct Settings {
 	};
 
 	int colorPalette = 0;
-
 	bool applyColor = true;
 	bool applyColorVariance = true;
 	bool applyWind = true;

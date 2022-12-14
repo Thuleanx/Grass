@@ -163,6 +163,11 @@ void MainWindow::initialize()
 	createSliderDouble(vLayout, bladeHeightScaleSlider, bladeHeightScaleBox,
 					   1, 1, 100, 10,
                        0.1f, 0.1f, 10.0f, 1.0f, settings.bladeHeightScale);
+
+	createLabel(vLayout, "Blade Randomizations");
+    createCheckbox(vLayout, applyPosWidthVariance, "Apply Positional + Width Variance", settings.applyPosWidthVariance);
+    createCheckbox(vLayout, applyHeightVariance, "Apply Height Variance", settings.applyHeightVariance);
+
     forceRedrawButton = new QPushButton();
     forceRedrawButton->setText(QStringLiteral("Regenerate"));
     auto onRegenerate = [&]() {
@@ -172,6 +177,15 @@ void MainWindow::initialize()
 	vLayout->addWidget(forceRedrawButton);
 
 	createLabel(vLayout, "Tweakables", true);
+    createCheckbox(vLayout, applyColor, "Apply Color", settings.applyColor);
+    createCheckbox(vLayout, applyColorVariance, "Apply Color Variance", settings.applyColorVariance);
+    createCheckbox(vLayout, applyWind, "Apply Wind", settings.applyWind);
+    createCheckbox(vLayout, drawPlayer, "Player", settings.drawFirstPlayer);
+    createCheckbox(vLayout, drawPlayer, "Friends", settings.drawFriendPlayer);
+	createLabel(vLayout, "Hill height");
+	createSliderDouble(vLayout, hillHeightSlider, hillHeightBox,
+					   0, 1, 100, 10,
+                       0.0f, 0.1f, 10.0f, 1.0f, settings.hillHeightMax);
 
 	realtime->settingsChanged();
 }
