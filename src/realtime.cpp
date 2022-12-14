@@ -78,6 +78,10 @@ void Realtime::paintGL() {
 		grass.onSettingsChanged();
 		settingsUpdated = false;
 	}
+	if (redraw) {
+		grass.onForceGrassRedraw();
+		redraw = false;
+	}
 	if (resized) {
 		grass.onResize(size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio, 
 			size().width(), size().height());
@@ -104,6 +108,11 @@ void Realtime::settingsChanged() {
 	settingsUpdated = true;
 
     update(); // asks for a PaintGL() call to occur
+}
+
+void Realtime::forceRedraw() {
+	redraw = true;
+	update();
 }
 
 // ================== Project 6: Action!

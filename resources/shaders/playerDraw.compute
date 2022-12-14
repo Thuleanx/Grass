@@ -33,7 +33,13 @@ void main() {
 	vec2 maskDir = vec2(gl_GlobalInvocationID.xz) 
 		+ vec2(-MASK_RADIUS, -MASK_RADIUS);
 
-	float projectionAgainstVelocity = dot(playerVelocity.xz, vec2(maskDir.x, maskDir.y));
+	float angle = M_PI / 4;
+	maskDir = vec2(
+		maskDir.x * cos(angle) - maskDir.y * sin(angle),
+		-maskDir.x * sin(angle) + maskDir.y * cos(angle)
+	);
+
+	float projectionAgainstVelocity = dot(playerVelocity.xz, maskDir);
 
 	float partingStrength = projectionAgainstVelocity > 0 || len2(playerVelocity.xz) < 0.1 ? 0.2 : 0.1;
 

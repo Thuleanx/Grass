@@ -24,13 +24,20 @@ void MainWindow::createLabel(QVBoxLayout *&layout, string labelStr, bool isTitle
 	layout->addWidget(label);
 }
 
-void MainWindow::createCheckbox(QVBoxLayout *&layout, QCheckBox *&checkbox, std::string text, bool defaultValue)
+void MainWindow::createCheckbox(QVBoxLayout *&layout, QCheckBox *&checkbox, std::string text, bool &syncedValue)
 {
 
 	checkbox = new QCheckBox();
 	checkbox->setText(text.c_str());
-	checkbox->setChecked(false);
+	checkbox->setChecked(syncedValue);
 	layout->addWidget(checkbox);
+    auto onTick = 
+	[&]() {
+		syncedValue ^= true;
+        checkbox->setChecked(syncedValue);
+		realtime->settingsChanged();
+	};
+	connect(checkbox, &QCheckBox::clicked, this, onTick);
 }
 
 void MainWindow::createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *&spinBox,
@@ -57,7 +64,8 @@ void MainWindow::createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *
 
 	layout->addWidget(groupBox);
 
-    auto onValueChangeWrapper = [&](int newValue) {
+    auto onValueChangeWrapper = 
+	[&](int newValue) {
 		slider->setValue(newValue);
 		spinBox->setValue(newValue);
 		syncedValue = newValue;
@@ -131,18 +139,22 @@ void MainWindow::initialize()
 	hLayout->addWidget(realtime, 1);
 	this->setLayout(hLayout);
 
-	createLabel(vLayout, "Camera", true);
-	createLabel(vLayout, "Near Plane");
-	createSliderDouble(vLayout, nearSlider, nearBox,
-					   1, 1, 1000, 10,
-					   0.1f, 0.1f, 10.0f, 0.1f, settings.nearPlane);
-	createLabel(vLayout, "Far Plane");
-	createSliderDouble(vLayout, farSlider, farBox,
-					   1, 1000, 10000, 10000,
-					   0.1f, 10.0f, 100.0f, 100.0f, settings.farPlane);
-	createLabel(vLayout, "Grass", true);
+	// createLabel(vLayout, "Camera", true);
+	settings.nearPlane = 0.1;
+	settings.farPlane = 100;
+	// createLabel(vLayout, "Near Plane");
+	// createSliderDouble(vLayout, nearSlider, nearBox,
+	// 				   1, 1, 1000, 10,
+	// 				   0.1f, 0.1f, 10.0f, 0.1f, settings.nearPlane);
+	// createLabel(vLayout, "Far Plane");
+	// createSliderDouble(vLayout, farSlider, farBox,
+	// 				   1, 1000, 10000, 10000,
+	// 				   0.1f, 10.0f, 100.0f, 100.0f, settings.farPlane);
+	createLabel(vLayout, "Grass Generation", true);
 	createLabel(vLayout, "Blade Count");
 	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 500, 150, settings.bladeCnt);
+	createLabel(vLayout, "Blade Segment Count");
+	createSlider(vLayout,bladeSegmentCntSlider, bladeSegmentCntBox, 1, 1, 5, 4, settings.bladeSegments);
 	createLabel(vLayout, "Density");
 	createSliderDouble(vLayout, densitySlider, densityBox,
 					   1, 1, 1000, 100,
@@ -151,10 +163,15 @@ void MainWindow::initialize()
 	createSliderDouble(vLayout, bladeHeightScaleSlider, bladeHeightScaleBox,
 					   1, 1, 100, 10,
                        0.1f, 0.1f, 10.0f, 1.0f, settings.bladeHeightScale);
-	createLabel(vLayout, "Parting Range");
-	createSliderDouble(vLayout, partingRangeSlider, partingRangeBox,
-					   1, 1, 100, 10,
-                       0.1f, 0.1f, 10.0f, 1.0f, settings.partingRange);
+    forceRedrawButton = new QPushButton();
+    forceRedrawButton->setText(QStringLiteral("Regenerate"));
+    auto onRegenerate = [&]() {
+		realtime->forceRedraw();
+	};
+	connect(forceRedrawButton, &QPushButton::clicked, this, onRegenerate);
+	vLayout->addWidget(forceRedrawButton);
+
+	createLabel(vLayout, "Tweakables", true);
 
 	realtime->settingsChanged();
 }

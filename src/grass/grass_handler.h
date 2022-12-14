@@ -22,6 +22,7 @@ class GrassHandler {
 		void onResize(int screen_width, int screen_height, 
 			int fbo_width, int fbo_height);
 		void onSettingsChanged();
+		void onForceGrassRedraw();
 		void update(Camera &camera);
 		void onDestroy();
 

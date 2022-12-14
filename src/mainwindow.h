@@ -20,7 +20,7 @@ public:
 private:
 	void createLabel(QVBoxLayout *&layout, std::string label, bool isTitle = false);
 
-	void createCheckbox(QVBoxLayout *&layout, QCheckBox *&checkbox, std::string text, bool defaultValue);
+	void createCheckbox(QVBoxLayout *&layout, QCheckBox *&checkbox, std::string text, bool &syncedValue);
 
 	void createSlider(QVBoxLayout *&layout, QSlider *&slider, QSpinBox *&spinBox, 
         int tickInterval, int minimum, int maximum, int defaultValue, int &syncedValue);	
@@ -40,11 +40,22 @@ private:
 	QSlider *bladeHeightScaleSlider;
 	QDoubleSpinBox *bladeHeightScaleBox;
 
-	QSlider *partingRangeSlider;
-	QDoubleSpinBox *partingRangeBox;
+	QSlider *bladeSegmentCntSlider;
+	QSpinBox *bladeSegmentCntBox;
 
-    QSlider *nearSlider;
-    QSlider *farSlider;
-    QDoubleSpinBox *nearBox;
-    QDoubleSpinBox *farBox;
+	QPushButton *forceRedrawButton;
+
+	// color
+
+	// randomize locations
+
+	// randomize height
+
+	// randomize 
+
+
+    // QSlider *nearSlider;
+    // QSlider *farSlider;
+    // QDoubleSpinBox *nearBox;
+    // QDoubleSpinBox *farBox;
 };

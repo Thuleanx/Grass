@@ -70,15 +70,18 @@ void GrassHandler::onResize(int screen_width, int screen_height,
 }
 
 void GrassHandler::onSettingsChanged() {
-	destroyVAOVBO();
-	initVAOVBO();
-	generateGrass();
 	shader_default.useProgram();
 	loadGrassData(shader_default);
 	shader_default.detach();
 	players.onSettingsChanged();
-
 	ErrorHandler::errorCheck("-- on settings changed");
+}
+
+void GrassHandler::onForceGrassRedraw() {
+	destroyVAOVBO();
+	initVAOVBO();
+	generateGrass();
+	ErrorHandler::errorCheck("-- on force redraw");
 }
 
 void GrassHandler::update(Camera &camera) {

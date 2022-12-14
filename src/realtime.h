@@ -27,6 +27,7 @@ public:
     void finish();                                      // Called on program exit
     void sceneChanged();
     void settingsChanged();
+	void forceRedraw();
 
 public slots:
     void tick(QTimerEvent* event);                      // Called once per tick of m_timer
@@ -56,6 +57,7 @@ private:
     // Device Correction Variables
     int m_devicePixelRatio;
 	bool settingsUpdated = false;
+    bool redraw = false;
 	bool resized = false;
 
 	GrassHandler grass;

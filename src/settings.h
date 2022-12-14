@@ -38,8 +38,8 @@ struct Settings {
 	std::string grassColorBottom = "#4f1446";
 	std::string grassColorAmbientOcclusion = "#2e0a30";
 	std::string grassColorOld = "#6ceded";
-
 	std::string clearColor = "#0d001a";
+	std::string playerColor = "000000";
 
 	std::vector<glm::vec2> extraPlayers = {
 		glm::vec2(5,0.5),
@@ -47,6 +47,17 @@ struct Settings {
 		glm::vec2(11,0.2),
 		glm::vec2(13,0.1)
 	};
+
+	int colorPalette = 0;
+
+	bool applyColor = true;
+	bool applyColorVariance = true;
+	bool applyWind = true;
+	bool drawFirstPlayer = true;
+	bool drawFriendPlayer = true;
+
+	bool applyPosWidthVariance = true;
+	bool applyHeightVariance = true;
 };
 
 // The global Settings object, will be initialized by MainWindow
