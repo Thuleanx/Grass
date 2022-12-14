@@ -36,6 +36,7 @@ class PlayerGroup {
 		const int MASK_RADIUS = 100;
 		const int MASK_SZ = MASK_RADIUS * 2 + 1;
 		const float AREA_COVERAGE = 100;
+		bool initialized = false;
 
 		GLuint velocityBuffer;
 		GLuint maskTexture;
@@ -43,5 +44,5 @@ class PlayerGroup {
 
 		void setupMask();
 		void setupVelocityBuffer();
-		void updateVelocityBuffer();
+		void updateVelocityBuffer(glm::vec2 time);
 };

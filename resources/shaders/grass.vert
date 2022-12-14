@@ -51,11 +51,17 @@ void applyWind(inout vec4 posWS) {
 	posWS += (wind + windMacro) * vec4(windDirection.x, 0, windDirection.y, 0);
 }
 
+bool isOutSideUV(vec2 uv) {
+	return uv.x < 0 || uv.y < 0 || uv.x > 1 || uv.y > 1;
+}
+
 void applyParting(inout vec4 posWS) {
 	vec4 pivotPoint = vec4(rootWS,1);
 
-	vec2 away = texture(velocityBuffer, 
-		saturate(rootWS.xz * velocityBuffer_samplingScale.zw + velocityBuffer_samplingScale.xy)).xy * 2 - 1;
+	vec2 uv = rootWS.xz * velocityBuffer_samplingScale.zw + velocityBuffer_samplingScale.xy;
+	if (isOutSideUV(uv)) return;
+
+	vec2 away = texture(velocityBuffer, uv).xy * 2 - 1;
 	float strength = length(away);
 
 	posWS = strength > 0 ?

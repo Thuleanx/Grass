@@ -5,6 +5,11 @@ layout(rgba32f, binding = 0) uniform image2D velocityBuffer;
 
 const int VELOCITY_BUFFER_SZ = 1000;
 
+float stiffness = 0.5;
+float damping = 0.00;
+
+uniform float deltaTime = 0;
+
 void main() {
 	if (int(gl_GlobalInvocationID.x) >= VELOCITY_BUFFER_SZ) return;
 	if (int(gl_GlobalInvocationID.y) >= VELOCITY_BUFFER_SZ) return;
@@ -12,7 +17,18 @@ void main() {
 	ivec2 ipos = ivec2(gl_GlobalInvocationID.xz);
 
 	vec4 grassSway = imageLoad(velocityBuffer, ipos) * 2 - 1;
-	grassSway.xy = mix(grassSway.xy, vec2(0,0), 0.02);
+	// grassSway.xy = mix(grassSway.xy, vec2(0,0), 0.02);
 
-	imageStore(velocityBuffer, ipos, (grassSway + 1) / 2);
+	vec2 currentVelocity = grassSway.zw;
+	vec2 deviationFromCenter = grassSway.xy;
+
+	vec2 acceleration = -stiffness * deviationFromCenter - damping * currentVelocity;
+	currentVelocity += deltaTime * acceleration;
+	deviationFromCenter += deltaTime * currentVelocity;
+	deviationFromCenter = vec2(
+		clamp(deviationFromCenter.x, -1, 1),
+		clamp(deviationFromCenter.y, -1, 1)
+	);
+
+	imageStore(velocityBuffer, ipos, (vec4(deviationFromCenter, currentVelocity) + 1) / 2);
 }

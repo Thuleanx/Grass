@@ -32,7 +32,7 @@ void PlayerGroup::setupMask() {
 }
 
 void PlayerGroup::setupVelocityBuffer() {
-	vector<vec4> initial(VELOCITY_BUFFER_SZ * VELOCITY_BUFFER_SZ, vec4(0.5, 0.5, 0, 0));
+	vector<vec4> initial(VELOCITY_BUFFER_SZ * VELOCITY_BUFFER_SZ, vec4(0.5));
 	Framebuffer::createTexture(velocityBuffer, GL_RGBA32F, GL_RGBA, GL_FLOAT, VELOCITY_BUFFER_SZ, VELOCITY_BUFFER_SZ,
 		GL_LINEAR, GL_CLAMP, &initial[0]);
 	glBindImageTexture(0, velocityBuffer, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
@@ -72,21 +72,25 @@ void PlayerGroup::awake() {
 	shader_updateVelocityBuffer.useProgram();
 	glBindImageTexture(0, velocityBuffer, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 	shader_updateVelocityBuffer.detach();
+
+	initialized = true;
 }
 
 void PlayerGroup::update(vec2 time) {
-    f(i,0,players.size()) {
-		if (i) players[i].setPosition(
-			vec3(
-				settings.extraPlayers[i-1].r * cos(M_PI * settings.extraPlayers[i-1].g * time.x), 
-				players[i].getPosition().y, 
-				settings.extraPlayers[i-1].r * sin(M_PI * settings.extraPlayers[i-1].g * time.x)
-			)
-		);
-		players[i].update();
-	}
-	drawLocations();
-	updateVelocityBuffer();
+	if (initialized) {
+		f(i,0,players.size()) {
+			if (i) players[i].setPosition(
+				vec3(
+					settings.extraPlayers[i-1].r * cos(M_PI * settings.extraPlayers[i-1].g * time.x), 
+					players[i].getPosition().y, 
+					settings.extraPlayers[i-1].r * sin(M_PI * settings.extraPlayers[i-1].g * time.x)
+				)
+			);
+			players[i].update();
+		}
+		drawLocations();
+		updateVelocityBuffer(time);
+	} else cout << "DRAW ATTEMPT" << endl;
 }
 
 void PlayerGroup::destroy() {
@@ -140,8 +144,9 @@ void PlayerGroup::drawLocations() {
 	shader_drawLocation.detach();
 }
 
-void PlayerGroup::updateVelocityBuffer() {
+void PlayerGroup::updateVelocityBuffer(vec2 time) {
 	shader_updateVelocityBuffer.useProgram();
+	shader_updateVelocityBuffer.setFloat("deltaTime", time.y < 0 ? 0 : time.y);
 	glDispatchCompute(
 		ceil(VELOCITY_BUFFER_SZ / 8.00f), 1, ceil(VELOCITY_BUFFER_SZ / 8.00f));
 	shader_updateVelocityBuffer.detach();
