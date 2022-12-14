@@ -6,7 +6,8 @@
 #include <vector>
 
 struct Settings {
-	int bladeCnt = 1;
+	int bladeCnt = 150;
+	int bladeCntTmp = 1;
 	int chunking = 0;
 	float density = 1;
     float nearPlane = 1;
@@ -34,13 +35,27 @@ struct Settings {
 
 	bool applyFXAA = false;
 
-	std::string grassColorTip = "#6e5181";
-	std::string grassColorTop = "#6f1d5c";
-	std::string grassColorBottom = "#4f1446";
-	std::string grassColorAmbientOcclusion = "#2e0a30";
-	std::string grassColorOld = "#6ceded";
-	std::string clearColor = "#0d001a";
-	std::string playerColor = "000000";
+	std::vector<std::string> grassColorTip = {
+		"#6e5181"
+	};
+	std::vector<std::string> grassColorTop = {
+		"#6f1d5c"
+	};
+	std::vector<std::string> grassColorBottom = {
+		"#4f1446" 
+	};
+	std::vector<std::string> grassColorAmbientOcclusion = {
+		"#2e0a30"
+	};
+	std::vector<std::string> grassColorOld = {
+		"#6ceded"
+	};
+	std::vector<std::string> clearColor = {
+		"#0d001a"
+	};
+	std::vector<std::string> playerColor = {
+		"#000000"
+	};
 
 	std::vector<glm::vec2> extraPlayers = {
 		glm::vec2(5,0.5),

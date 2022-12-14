@@ -111,6 +111,11 @@ void PlayerGroup::drawPlayers(Camera camera) {
 	shader.setMat4("viewMatrix", camera.getViewMatrix());
 	shader.setMat4("projMatrix", camera.getProjectionMatrix());
 
+	auto hexToColor = [](string hexColor) {
+		int r, g, b;
+		sscanf(hexColor.c_str(), "#%02x%02x%02x", &r, &g, &b);
+		return vec4(r,g,b,255)/255.0f;
+	};
 
 	f(i,0,players.size()) {
 		if ((!i && settings.drawFirstPlayer) || (i && settings.drawFriendPlayer)) {
@@ -119,6 +124,8 @@ void PlayerGroup::drawPlayers(Camera camera) {
 
 			shader.setMat4("modelMatrix", players[i].getCTM());
 			shader.setVec3("objectPosition", players[i].getPosition());
+			vec4 col = hexToColor(settings.playerColor[settings.colorPalette]);
+			shader.setVec4("playerColor", hexToColor(settings.playerColor[settings.colorPalette]));
 			players[i].drawPlayer();
 		}
 	}

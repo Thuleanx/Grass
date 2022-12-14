@@ -3,8 +3,10 @@
 in vec4 posWS;
 in vec4 normalWS;
 
+uniform vec4 playerColor;
 out vec4 fragColor;
 
 void main() {
-	fragColor = vec4(1,1,1,1);
+	fragColor = playerColor;
+	fragColor.a = 1;
 }

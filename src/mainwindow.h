@@ -58,6 +58,9 @@ private:
 	QCheckBox *drawPlayer;
 	QCheckBox *drawFriends;
 
+	QSlider *paletteSlider;
+	QSpinBox *paletteBox;
+
 
     // QSlider *nearSlider;
     // QSlider *farSlider;

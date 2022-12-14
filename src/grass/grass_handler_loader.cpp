@@ -62,25 +62,25 @@ void GrassHandler::loadLightData(const ShaderProgram &shader, RenderData &render
 	}
 }
 
-vec4 hexToColor(string hexColor) {
-	int r, g, b;
-	sscanf(hexColor.c_str(), "#%02x%02x%02x", &r, &g, &b);
-	return vec4(r,g,b,255)/255.0f;
-}
 
 void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 	// shader.setVec4("ambient", vec4(.2f,0,.2f,1));
 	// shader.setVec4("diffuse", vec4(1,1,0,1));
 	// shader.setVec4("specular", vec4(0.3f,0.3f,0,1));
+	auto hexToColor = [](string hexColor) {
+		int r, g, b;
+		sscanf(hexColor.c_str(), "#%02x%02x%02x", &r, &g, &b);
+		return vec4(r,g,b,255)/255.0f;
+	};
 
-	shader.setVec4("grassColorTip", hexToColor(settings.grassColorTip));
-	shader.setVec4("grassColorTop", hexToColor(settings.grassColorTop));
-	shader.setVec4("grassColorBottom", hexToColor(settings.grassColorBottom));
-	shader.setVec4("grassColorAmbientOcclusion", hexToColor(settings.grassColorAmbientOcclusion));
+	shader.setVec4("grassColorTip", hexToColor(settings.grassColorTip[settings.colorPalette]));
+	shader.setVec4("grassColorTop", hexToColor(settings.grassColorTop[settings.colorPalette]));
+	shader.setVec4("grassColorBottom", hexToColor(settings.grassColorBottom[settings.colorPalette]));
+	shader.setVec4("grassColorAmbientOcclusion", hexToColor(settings.grassColorAmbientOcclusion[settings.colorPalette]));
 
-	shader.setVec4("grassColorOld", hexToColor(settings.grassColorOld));
+	shader.setVec4("grassColorOld", hexToColor(settings.grassColorOld[settings.colorPalette]));
 
-	vec4 clearCol = hexToColor(settings.clearColor);
+	vec4 clearCol = hexToColor(settings.clearColor[settings.colorPalette]);
 
 	shader.setFloat("partingRange", settings.partingRange);
 

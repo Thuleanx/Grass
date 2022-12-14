@@ -25,8 +25,8 @@ void GrassHandler::generateGrass() {
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade() * 3 * 
 		numBlades, nullptr, GL_STATIC_DRAW);
 
-	shader_compute_grass.setInt("bladeCntX", settings.bladeCnt);
-	shader_compute_grass.setInt("bladeCntZ", settings.bladeCnt);
+	shader_compute_grass.setInt("bladeCntX", settings.bladeCntTmp);
+	shader_compute_grass.setInt("bladeCntZ", settings.bladeCntTmp);
 	shader_compute_grass.setFloat("bladeWidth", settings.bladeWidth);
 	shader_compute_grass.setFloat("bladeHeight", settings.bladeHeight * settings.bladeHeightScale);
 
@@ -45,7 +45,6 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.setInt("applyPosWidthVariance", settings.applyPosWidthVariance);
 	shader_compute_grass.setInt("applyHeightVariance", settings.applyHeightVariance);
-
 
 	// shader_compute_grass.setFloat("hillHeightMax", settings.hillHeightMax);
 	// shader_compute_grass.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
@@ -95,6 +94,7 @@ void GrassHandler::generateGrass() {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
 	settings.bladeSegments = settings.tempBladeSegments;
+	settings.bladeCnt = settings.bladeCntTmp;
 }
 
 void GrassHandler::generateWindTexture() {

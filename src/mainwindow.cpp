@@ -152,7 +152,7 @@ void MainWindow::initialize()
 	// 				   0.1f, 10.0f, 100.0f, 100.0f, settings.farPlane);
 	createLabel(vLayout, "Grass Generation", true);
 	createLabel(vLayout, "Blade Count");
-	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 500, 150, settings.bladeCnt);
+	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 500, 150, settings.bladeCntTmp);
 	createLabel(vLayout, "Blade Segment Count");
 	createSlider(vLayout,bladeSegmentCntSlider, bladeSegmentCntBox, 1, 1, 5, 4, settings.tempBladeSegments);
 	createLabel(vLayout, "Density");
@@ -186,6 +186,8 @@ void MainWindow::initialize()
 	createSliderDouble(vLayout, hillHeightSlider, hillHeightBox,
 					   1, 0, 100, 10,
                        0.1f, 0.0f, 10.0f, 1.0f, settings.hillHeightMax);
+	createLabel(vLayout, "Palette");
+	createSlider(vLayout, paletteSlider, paletteBox, 1, 0, 0, 0, settings.colorPalette);
 
 	realtime->settingsChanged();
 }
