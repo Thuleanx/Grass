@@ -154,7 +154,7 @@ void MainWindow::initialize()
 	createLabel(vLayout, "Blade Count");
 	createSlider(vLayout, bladeCntSlider, bladeCntBox, 1, 1, 500, 150, settings.bladeCnt);
 	createLabel(vLayout, "Blade Segment Count");
-	createSlider(vLayout,bladeSegmentCntSlider, bladeSegmentCntBox, 1, 1, 5, 4, settings.bladeSegments);
+	createSlider(vLayout,bladeSegmentCntSlider, bladeSegmentCntBox, 1, 1, 5, 4, settings.tempBladeSegments);
 	createLabel(vLayout, "Density");
 	createSliderDouble(vLayout, densitySlider, densityBox,
 					   1, 1, 1000, 100,
@@ -184,8 +184,8 @@ void MainWindow::initialize()
     createCheckbox(vLayout, drawPlayer, "Friends", settings.drawFriendPlayer);
 	createLabel(vLayout, "Hill height");
 	createSliderDouble(vLayout, hillHeightSlider, hillHeightBox,
-					   0, 1, 100, 10,
-                       0.0f, 0.1f, 10.0f, 1.0f, settings.hillHeightMax);
+					   1, 0, 100, 10,
+                       0.1f, 0.0f, 10.0f, 1.0f, settings.hillHeightMax);
 
 	realtime->settingsChanged();
 }

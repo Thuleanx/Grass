@@ -41,6 +41,9 @@ const int MAX_SUPPORTED_BLADEPOINTS = MAX_SUPPORTED_SEGMENTS * 2 + 1;
 uniform int bladeSegments = 1;
 uniform float bladeCurvature;
 
+uniform bool applyPosWidthVariance = true;
+uniform bool applyHeightVariance = true;
+
 // uniform float hillHeightMax;
 // uniform float hillHeightNoiseScale;
 
@@ -65,9 +68,12 @@ void createBlade(
 	// posWS += snoise(posWS.xz * hillHeightNoiseScale + 12300) * hillHeightMax;
 
 	float grassHeightNoise = snoise(posWS.xz*300);
-	float grassHeight = pow(clamp(iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f) + pow(abs(grassHeightNoise),5) * sign(grassHeightNoise) * 0.25, 0, 1), 2); 
+
+	float grassHeight = 
+		applyHeightVariance ? pow(clamp(iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f) + pow(abs(grassHeightNoise),5) * sign(grassHeightNoise) * 0.25, 0, 1), 2) : 0; 
+
 	float height = bladeHeight + bladeHeightVariance * grassHeight;
-	float width = bladeWidth + bladeWidthVariance * random1(posWS.xz + 123);
+	float width = bladeWidth + (applyPosWidthVariance ? bladeWidthVariance * random1(posWS.xz + 123) : 0);
 	float maxBend = bladeBendMax * M_PI / 2 * random1(posWS.xz + 1230);
 
 	mat4 bendMatrix = rotateAroundAxis(vec3(1,0,0), maxBend);
@@ -117,7 +123,7 @@ void main() {
 	if (int(gl_GlobalInvocationID.z) >= 2*bladeCntZ + 1) return;
 
 	vec3 posWS = (vec3(gl_GlobalInvocationID.xyz) - vec3(bladeCntX, 0, bladeCntZ)) * vec3(1.00/density.x,0,1.00/density.y);
-	posWS.xz += snoise2(gl_GlobalInvocationID.xz * 1000) * bladePosVariance;
+	posWS.xz += applyPosWidthVariance ? snoise2(gl_GlobalInvocationID.xz * 1000) * bladePosVariance : vec2(0,0);
 
 	int id = int(int(gl_GlobalInvocationID.x) * (2*bladeCntZ+1)) + int(gl_GlobalInvocationID.z);
 

@@ -43,6 +43,10 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 
+	shader_compute_grass.setInt("applyPosWidthVariance", settings.applyPosWidthVariance);
+	shader_compute_grass.setInt("applyHeightVariance", settings.applyHeightVariance);
+
+
 	// shader_compute_grass.setFloat("hillHeightMax", settings.hillHeightMax);
 	// shader_compute_grass.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
 
@@ -89,6 +93,8 @@ void GrassHandler::generateGrass() {
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+	settings.bladeSegments = settings.tempBladeSegments;
 }
 
 void GrassHandler::generateWindTexture() {
