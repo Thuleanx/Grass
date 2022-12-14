@@ -3,6 +3,7 @@
 
 #include <string>
 #include <glm/glm.hpp>
+#include <vector>
 
 struct Settings {
 	int bladeCnt = 1;
@@ -39,6 +40,13 @@ struct Settings {
 	std::string grassColorOld = "#6ceded";
 
 	std::string clearColor = "#0d001a";
+
+	std::vector<glm::vec2> extraPlayers = {
+		glm::vec2(5,0.5),
+		glm::vec2(7,0.3),
+		glm::vec2(11,0.2),
+		glm::vec2(13,0.1)
+	};
 };
 
 // The global Settings object, will be initialized by MainWindow

@@ -1,6 +1,7 @@
 #include "player_group.h"
 #include <algorithm>
 #include "t_utils/Framebuffer.h"
+#include "settings.h"
 #include "t_utils/ErrorHandler.h"
 #define f(i,a,b) for (int i = a; i < b; i++)
 using namespace std;
@@ -43,16 +44,14 @@ void PlayerGroup::awake() {
 	shader.attachShader(GL_FRAGMENT_SHADER, ":/resources/shaders/player.frag");
 	shader.finalizeProgram();
 
-	players = vector<Player>(numPlayers);
-	f(i,0,numPlayers)
+	players = vector<Player>(1+settings.extraPlayers.size());
+	f(i,0,players.size())
 		players[i].awake();
 
-cout << "COMPILING" << endl;
 	shader_drawLocation.initializeProgram();
 	shader_drawLocation.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/playerDraw.compute");
 	shader_drawLocation.finalizeProgram();
 
-cout << "COMPILING" << endl;
 	shader_updateVelocityBuffer.initializeProgram();
 	shader_updateVelocityBuffer.attachShader(GL_COMPUTE_SHADER, ":/resources/shaders/grassSway.compute");
 	shader_updateVelocityBuffer.finalizeProgram();
@@ -69,15 +68,23 @@ cout << "COMPILING" << endl;
 	shader_updateVelocityBuffer.detach();
 }
 
-void PlayerGroup::update() {
-	f(i,0,numPlayers)
+void PlayerGroup::update(vec2 time) {
+    f(i,0,players.size()) {
+		if (i) players[i].setPosition(
+			vec3(
+				settings.extraPlayers[i-1].r * cos(M_PI * settings.extraPlayers[i-1].g * time.x), 
+				players[i].getPosition().y, 
+				settings.extraPlayers[i-1].r * sin(M_PI * settings.extraPlayers[i-1].g * time.x)
+			)
+		);
 		players[i].update();
+	}
 	drawLocations();
 	updateVelocityBuffer();
 }
 
 void PlayerGroup::destroy() {
-	f(i,0,numPlayers)
+    f(i,0,players.size())
 		players[i].destroy();
 	shader.destroy();
 

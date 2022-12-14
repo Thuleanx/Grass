@@ -8,6 +8,7 @@ using namespace glm;
 using namespace std;
 
 clock_t startTime;
+float lastTime = 0;
 
 void GrassHandler::awake(RenderData &renderData) {
     Blit::initialize();
@@ -46,6 +47,7 @@ void GrassHandler::awake(RenderData &renderData) {
 
 	ErrorHandler::errorCheck("-- on awake");
 	startTime = clock();
+	lastTime = startTime;
 
 	players.awake();
 }
@@ -77,10 +79,13 @@ void GrassHandler::onSettingsChanged() {
 }
 
 void GrassHandler::update(Camera &camera) {
-	players.update();
+	float time = float(clock()-startTime) / CLOCKS_PER_SEC;
+	float deltaTime = time - lastTime;
+	lastTime = time;
+	players.update(vec2(time, deltaTime));
 	rawPass: {
 		shader_default.useProgram();
-		shader_default.setFloat("time", float(clock()-startTime) / CLOCKS_PER_SEC);
+		shader_default.setFloat("time", time);
 		fbo_raw.use();
 
 		glActiveTexture(GL_TEXTURE0);
@@ -105,7 +110,7 @@ void GrassHandler::update(Camera &camera) {
 
 	postProcessingBlit: {
 		shader_postprocessing.useProgram();
-		shader_postprocessing.setFloat("time", float(clock()-startTime) / CLOCKS_PER_SEC);
+		shader_postprocessing.setFloat("time", time);
 		glViewport(0, 0, screen_width, screen_height);
 
 		glActiveTexture(GL_TEXTURE0);

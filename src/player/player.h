@@ -22,6 +22,7 @@ class Player {
 		void drawPlayer();
 		glm::mat4 getCTM() const;
 		glm::vec3 getPosition() const;
+        void setPosition(glm::vec3 newPos) { pos = newPos; }
 		glm::vec3 getVelocity() const { return velocity; }
 	private:
 		GLuint vao, vbo;

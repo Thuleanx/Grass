@@ -13,7 +13,7 @@
 class PlayerGroup {
 	public: 
 		void awake();
-		void update();
+		void update(glm::vec2 time);
 		void destroy();
 		Player& getMainPlayer();
 
@@ -24,7 +24,6 @@ class PlayerGroup {
 			{ return glm::vec4(1/2.0f,1/2.0f,
 				float(1/AREA_COVERAGE),float(1/AREA_COVERAGE)); }
 	private:
-        const int numPlayers = 1;
         ShaderProgram shader;
         ShaderProgram shader_drawLocation;
         ShaderProgram shader_updateVelocityBuffer;
