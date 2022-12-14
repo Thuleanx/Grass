@@ -69,9 +69,9 @@ vec4 hexToColor(string hexColor) {
 }
 
 void GrassHandler::loadGrassData(const ShaderProgram &shader) {
-	shader.setVec4("ambient", vec4(.2f,0,.2f,1));
-	shader.setVec4("diffuse", vec4(1,1,0,1));
-	shader.setVec4("specular", vec4(0.3f,0.3f,0,1));
+	// shader.setVec4("ambient", vec4(.2f,0,.2f,1));
+	// shader.setVec4("diffuse", vec4(1,1,0,1));
+	// shader.setVec4("specular", vec4(0.3f,0.3f,0,1));
 
 	shader.setVec4("grassColorTip", hexToColor(settings.grassColorTip));
 	shader.setVec4("grassColorTop", hexToColor(settings.grassColorTop));
@@ -86,6 +86,9 @@ void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 
 	shader.setFloat("hillHeightMax", settings.hillHeightMax);
 	shader.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
+
+	shader.setInt("applyColor", settings.applyColor);
+	shader.setInt("applyColorVariance", settings.applyColorVariance);
 
 	glClearColor(clearCol.r, clearCol.g, clearCol.b, clearCol.a);
 
