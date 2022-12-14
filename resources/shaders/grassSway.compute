@@ -5,8 +5,8 @@ layout(rgba32f, binding = 0) uniform image2D velocityBuffer;
 
 const int VELOCITY_BUFFER_SZ = 1000;
 
-float stiffness = 0.5;
-float damping = 0.00;
+float stiffness = 5;
+float damping = 2;
 
 uniform float deltaTime = 0;
 

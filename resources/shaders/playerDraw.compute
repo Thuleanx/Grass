@@ -35,7 +35,7 @@ void main() {
 
 	float projectionAgainstVelocity = dot(playerVelocity.xz, vec2(maskDir.x, maskDir.y));
 
-	float partingStrength = projectionAgainstVelocity > 0 || len2(playerVelocity.xz) < 0.1 ? 0.2 : 0;
+	float partingStrength = projectionAgainstVelocity > 0 || len2(playerVelocity.xz) < 0.1 ? 0.2 : 0.1;
 
 	vec2 velocityToStore = 
 		len2(velocity2) < 1.1*len2(velocityAtMask) ? 
