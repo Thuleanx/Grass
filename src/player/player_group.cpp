@@ -112,13 +112,15 @@ void PlayerGroup::drawPlayers(Camera camera) {
 	shader.setMat4("projMatrix", camera.getProjectionMatrix());
 
 
-	for (auto player : players) {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, heightMap);
+	f(i,0,players.size()) {
+		if ((!i && settings.drawFirstPlayer) || (i && settings.drawFriendPlayer)) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, heightMap);
 
-		shader.setMat4("modelMatrix", player.getCTM());
-		shader.setVec3("objectPosition", player.getPosition());
-		player.drawPlayer();
+			shader.setMat4("modelMatrix", players[i].getCTM());
+			shader.setVec3("objectPosition", players[i].getPosition());
+			players[i].drawPlayer();
+		}
 	}
 	shader.detach();
 }
@@ -129,17 +131,19 @@ void PlayerGroup::drawLocations() {
 	glBindTexture(GL_TEXTURE_2D, maskTexture);
 
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-	for (auto player : players) {
-		vec2 loc = vec2(
-				player.getPosition().x * getVelocityBufferSamplingScale().z + getVelocityBufferSamplingScale().x, 
-				player.getPosition().z * getVelocityBufferSamplingScale().w + getVelocityBufferSamplingScale().y
-			);
-		loc *= VELOCITY_BUFFER_SZ;
-		shader_drawLocation.setVec2("pos", loc);
-		shader_drawLocation.setVec3("playerVelocity", player.getVelocity());
-		glDispatchCompute(
-			ceil(MASK_SZ / 8.00f), 1, ceil(MASK_SZ / 8.00f));
-		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	f(i,0,players.size()) {
+		if ((!i && settings.drawFirstPlayer) || (i && settings.drawFriendPlayer)) {
+			vec2 loc = vec2(
+					players[i].getPosition().x * getVelocityBufferSamplingScale().z + getVelocityBufferSamplingScale().x, 
+					players[i].getPosition().z * getVelocityBufferSamplingScale().w + getVelocityBufferSamplingScale().y
+				);
+			loc *= VELOCITY_BUFFER_SZ;
+			shader_drawLocation.setVec2("pos", loc);
+			shader_drawLocation.setVec3("playerVelocity",players[i].getVelocity());
+			glDispatchCompute(
+				ceil(MASK_SZ / 8.00f), 1, ceil(MASK_SZ / 8.00f));
+			glMemoryBarrier(GL_ALL_BARRIER_BITS);
+		}
 	}
 	shader_drawLocation.detach();
 }

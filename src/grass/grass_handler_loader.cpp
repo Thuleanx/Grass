@@ -89,6 +89,7 @@ void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 
 	shader.setInt("applyColor", settings.applyColor);
 	shader.setInt("applyColorVariance", settings.applyColorVariance);
+	shader.setInt("applyWind", settings.applyWind);
 
 	glClearColor(clearCol.r, clearCol.g, clearCol.b, clearCol.a);
 

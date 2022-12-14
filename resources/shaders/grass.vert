@@ -28,7 +28,7 @@ float windFrequencyLo = 0.5;
 float windFrequencyHi = 0.2;
 float windAmplitude = 0.65*0.3;
 
-float windMacroFrequency = 0.03;
+float windMacroFrequency = 0.3;
 float windMacroSpeed = 0.06;
 float windMacroAmplitude = 0.25;
 
@@ -41,7 +41,9 @@ uniform float hillHeightMax;
 
 uniform vec3 displacement;
 
-void applyWind(inout vec4 posWS) {
+uniform bool applyWind;
+
+void applyWindF(inout vec4 posWS) {
 	float wind = cos(time * ((idHash >= 0.5 ? windFrequencyHi : windFrequencyLo) * (1+grassHeightIn/2)) +  idHash*0.5f);
 	wind = (wind*wind*windAmplitude)*uvIn.y*(1+grassHeightIn/2)*0.6;
 
@@ -72,7 +74,7 @@ void applyParting(inout vec4 posWS) {
 
 void main() {
 	posWS = vec4(posWSIn + displacement, 1);
-	applyWind(posWS);
+	if (applyWind) applyWindF(posWS);
 	applyParting(posWS);
 	posWS += vec4(0,1,0,0) * (texture(hillMap, rootWS.xz * hillHeightNoiseScale).x * hillHeightMax);
 
