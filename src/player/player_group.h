@@ -14,6 +14,7 @@ class PlayerGroup {
 	public: 
 		void awake();
 		void update(glm::vec2 time);
+		void onSettingsChanged();
 		void destroy();
 		Player& getMainPlayer();
 
@@ -23,6 +24,7 @@ class PlayerGroup {
 		glm::vec4 getVelocityBufferSamplingScale() 
 			{ return glm::vec4(1/2.0f,1/2.0f,
 				float(1/AREA_COVERAGE),float(1/AREA_COVERAGE)); }
+		void assignHeightMap(GLuint heightMap) { this->heightMap = heightMap; }
 	private:
         ShaderProgram shader;
         ShaderProgram shader_drawLocation;
@@ -37,6 +39,7 @@ class PlayerGroup {
 
 		GLuint velocityBuffer;
 		GLuint maskTexture;
+		GLuint heightMap = 0;
 
 		void setupMask();
 		void setupVelocityBuffer();

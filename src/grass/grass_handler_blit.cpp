@@ -4,6 +4,7 @@
 using namespace std;
 
 void GrassHandler::initFramebuffers() {
+	ErrorHandler::errorCheck("-- on before framebuffer");
 	fbo_raw.initialize();
 	ErrorHandler::errorCheck("-- on initialize framebuffer");
 	ErrorHandler::errorCheck("-- on use fbo raw");

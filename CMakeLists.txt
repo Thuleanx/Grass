@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}
     src/player/player_group.cpp
     src/player/player_group.h
 
+    src/grass/grass_handler_heightMap.cpp
     src/grass/grass_handler_blit.cpp
     src/grass/grass_handler_shaders.cpp
     src/grass/grass_handler_generation.cpp
@@ -99,6 +100,7 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     PREFIX
         "/"
     FILES
+        resources/textures/heightmap1.png
         resources/shaders/grassSway.compute
         resources/shaders/playerDraw.compute
         resources/shaders/player.frag

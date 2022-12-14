@@ -59,6 +59,7 @@ void ShaderProgram::compileToString(const char* fileName, string &result) {
 	QFile file(filepathStr);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         cout << "Parsing: " << fileName << endl;
+		fflush(stdout);
 		QTextStream stream(&file);
 
 		while (!stream.atEnd()) {

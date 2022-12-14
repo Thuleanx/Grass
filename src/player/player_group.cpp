@@ -63,6 +63,12 @@ void PlayerGroup::awake() {
 	ErrorHandler::errorCheck("-- on gen velocity buffer");
 	shader_drawLocation.detach();
 
+	shader.useProgram();
+	shader.setInt("hillMap", 0);
+	shader.setFloat("hillHeightMax", settings.hillHeightMax);
+	shader.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
+	shader.detach();
+
 	shader_updateVelocityBuffer.useProgram();
 	glBindImageTexture(0, velocityBuffer, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 	shader_updateVelocityBuffer.detach();
@@ -101,8 +107,13 @@ void PlayerGroup::drawPlayers(Camera camera) {
 	shader.setMat4("viewMatrix", camera.getViewMatrix());
 	shader.setMat4("projMatrix", camera.getProjectionMatrix());
 
+
 	for (auto player : players) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, heightMap);
+
 		shader.setMat4("modelMatrix", player.getCTM());
+		shader.setVec3("objectPosition", player.getPosition());
 		player.drawPlayer();
 	}
 	shader.detach();
@@ -134,4 +145,12 @@ void PlayerGroup::updateVelocityBuffer() {
 	glDispatchCompute(
 		ceil(VELOCITY_BUFFER_SZ / 8.00f), 1, ceil(VELOCITY_BUFFER_SZ / 8.00f));
 	shader_updateVelocityBuffer.detach();
+}
+
+
+void PlayerGroup::onSettingsChanged() {
+	shader_drawLocation.useProgram();
+	shader_drawLocation.setFloat("hillHeightMax", settings.hillHeightMax);
+	shader_drawLocation.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
+	shader_drawLocation.detach();
 }

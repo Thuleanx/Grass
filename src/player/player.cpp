@@ -5,6 +5,7 @@ using namespace std;
 
 void Player::drawPlayer() {
 	glBindVertexArray(vao);
+	glActiveTexture(GL_TEXTURE0);
 	glDrawArrays(GL_TRIANGLES, 0, sphere.shapeCount());
     glBindVertexArray(0);
 }

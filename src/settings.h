@@ -25,7 +25,7 @@ struct Settings {
 	float bladeCurvature = 1.0f;
 	int bladeSegments = 4;
 
-	float hillHeightMax = 2.0f;
+	float hillHeightMax = 10.0f;
 	float hillHeightNoiseScale = 0.01f;
 
 	float partingRange = 2;

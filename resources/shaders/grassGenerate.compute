@@ -41,8 +41,8 @@ const int MAX_SUPPORTED_BLADEPOINTS = MAX_SUPPORTED_SEGMENTS * 2 + 1;
 uniform int bladeSegments = 1;
 uniform float bladeCurvature;
 
-uniform float hillHeightMax;
-uniform float hillHeightNoiseScale;
+// uniform float hillHeightMax;
+// uniform float hillHeightNoiseScale;
 
 uniform vec2 density;
 
@@ -62,7 +62,7 @@ void createBlade(
 	in vec3 posWS,
 	out DrawTriangle blade[MAX_SUPPORTED_TRIANGLES]) {
 
-	posWS += snoise(posWS.xz * hillHeightNoiseScale + 12300) * hillHeightMax;
+	// posWS += snoise(posWS.xz * hillHeightNoiseScale + 12300) * hillHeightMax;
 
 	float grassHeightNoise = snoise(posWS.xz*300);
 	float grassHeight = pow(clamp(iqnoise(posWS.xz * bladeHeightNoiseScale, 0.5f, 0.5f) + pow(abs(grassHeightNoise),5) * sign(grassHeightNoise) * 0.25, 0, 1), 2); 

@@ -27,6 +27,8 @@ void GrassHandler::initShaders() {
 	shader_default.useProgram();
 	shader_default.setInt("windNoise", 0);
 	shader_default.setInt("velocityBuffer", 1);
+	shader_default.setInt("hillMap", 2);
+
 	shader_default.setVec4("velocityBuffer_samplingScale", players.getVelocityBufferSamplingScale());
 	shader_default.detach();
 

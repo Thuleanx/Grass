@@ -84,6 +84,9 @@ void GrassHandler::loadGrassData(const ShaderProgram &shader) {
 
 	shader.setFloat("partingRange", settings.partingRange);
 
+	shader.setFloat("hillHeightMax", settings.hillHeightMax);
+	shader.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
+
 	glClearColor(clearCol.r, clearCol.g, clearCol.b, clearCol.a);
 
 }

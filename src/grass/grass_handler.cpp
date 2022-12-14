@@ -36,6 +36,7 @@ void GrassHandler::awake(RenderData &renderData) {
 	initShaders();
 	initVAOVBO();
 	initFramebuffers();
+	initHeightMap();
 
 	generateGrass();
 	generateWindTexture();
@@ -49,6 +50,7 @@ void GrassHandler::awake(RenderData &renderData) {
 	startTime = clock();
 	lastTime = startTime;
 
+	players.assignHeightMap(heightMap);
 	players.awake();
 }
 
@@ -74,6 +76,7 @@ void GrassHandler::onSettingsChanged() {
 	shader_default.useProgram();
 	loadGrassData(shader_default);
 	shader_default.detach();
+	players.onSettingsChanged();
 
 	ErrorHandler::errorCheck("-- on settings changed");
 }
@@ -92,6 +95,8 @@ void GrassHandler::update(Camera &camera) {
 		glBindTexture(GL_TEXTURE_2D, wind_noiseTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, players.getVelocityBuffer());
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, heightMap);
 
 		glViewport(0, 0, fbo_width, fbo_height);
 		// glViewport(0, 0, screen_width, screen_height);
@@ -117,6 +122,7 @@ void GrassHandler::update(Camera &camera) {
 		glBindTexture(GL_TEXTURE_2D, default_screen);
 		// glBindTexture(GL_TEXTURE_2D, players.getVelocityBuffer());
 		// glBindTexture(GL_TEXTURE_2D, wind_noiseTexture);
+		// glBindTexture(GL_TEXTURE_2D, heightMap);
 		Blit::blit(fbo_main);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -134,5 +140,6 @@ void GrassHandler::onDestroy() {
 	destroyVAOVBO();
 	destroyFramebuffers();
 	destroyWindTexture();
+	destroyHeightMap();
 	players.destroy();
 }

@@ -35,6 +35,10 @@ float windMacroAmplitude = 0.25;
 uniform sampler2D velocityBuffer;
 uniform vec4 velocityBuffer_samplingScale;
 
+uniform sampler2D hillMap;
+uniform float hillHeightNoiseScale;
+uniform float hillHeightMax;
+
 void applyWind(inout vec4 posWS) {
 	float wind = cos(time * ((idHash >= 0.5 ? windFrequencyHi : windFrequencyLo) * (1+grassHeightIn/2)) +  idHash*0.5f);
 	wind = (wind*wind*windAmplitude)*uvIn.y*(1+grassHeightIn/2)*0.6;
@@ -62,6 +66,7 @@ void main() {
 	posWS = vec4(posWSIn, 1);
 	applyWind(posWS);
 	applyParting(posWS);
+	posWS += vec4(0,1,0,0) * (texture(hillMap, rootWS.xz * hillHeightNoiseScale).x * hillHeightMax);
 
 	normalWS = vec4(normalize(normalWSIn),0);
 	gl_Position = projMatrix * viewMatrix * posWS;

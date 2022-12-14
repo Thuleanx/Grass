@@ -24,6 +24,8 @@ class GrassHandler {
 		void onSettingsChanged();
 		void update(Camera &camera);
 		void onDestroy();
+
+		GLuint getHeightMap() const { return heightMap; }
 	private:
 		Framebuffer fbo_main = Framebuffer(2);
 		Framebuffer fbo_raw;
@@ -40,6 +42,8 @@ class GrassHandler {
 		GLuint default_screen;
 		GLuint default_screen_depth;
 		GLuint wind_noiseTexture;
+
+		GLuint heightMap;
 
 		const int vertexOutputSizeBytes = 16;
         const glm::vec3 workGroupSz = glm::vec3(8,1,8);
@@ -61,6 +65,9 @@ class GrassHandler {
 
 		void initFramebuffers();
 		void destroyFramebuffers();
+
+		void initHeightMap();
+		void destroyHeightMap();
 
 		void loadGrassData(const ShaderProgram &shader);
 		static void loadLightData(const ShaderProgram &shader, RenderData &renderData);
