@@ -165,6 +165,7 @@ void MainWindow::initialize()
                        0.1f, 0.1f, 10.0f, 1.0f, settings.bladeHeightScale);
 
 	createLabel(vLayout, "Blade Randomizations");
+    createCheckbox(vLayout, applyBendVariance, "Apply Bend Variance", settings.applyBendVariance);
     createCheckbox(vLayout, applyPosWidthVariance, "Apply Positional + Width Variance", settings.applyPosWidthVariance);
     createCheckbox(vLayout, applyHeightVariance, "Apply Height Variance", settings.applyHeightVariance);
 
@@ -181,13 +182,15 @@ void MainWindow::initialize()
     createCheckbox(vLayout, applyColorVariance, "Apply Color Variance", settings.applyColorVariance);
     createCheckbox(vLayout, applyWind, "Apply Wind", settings.applyWind);
     createCheckbox(vLayout, drawPlayer, "Player", settings.drawFirstPlayer);
-    createCheckbox(vLayout, drawPlayer, "Friends", settings.drawFriendPlayer);
+    // createCheckbox(vLayout, drawPlayer, "Friends", settings.drawFriendPlayer);
+	createLabel(vLayout, "Friends");
+	createSlider(vLayout,friendsSlider, friendsBox, 1, 0, settings.extraPlayers.size(), settings.extraPlayers.size(), settings.friends);
 	createLabel(vLayout, "Hill height");
 	createSliderDouble(vLayout, hillHeightSlider, hillHeightBox,
 					   1, 0, 100, 10,
                        0.1f, 0.0f, 10.0f, 1.0f, settings.hillHeightMax);
 	createLabel(vLayout, "Palette");
-	createSlider(vLayout, paletteSlider, paletteBox, 1, 0, 0, 0, settings.colorPalette);
+	createSlider(vLayout, paletteSlider, paletteBox, 1, 0, settings.grassColorTip.size()-1, 0, settings.colorPalette);
 
 	realtime->settingsChanged();
 }

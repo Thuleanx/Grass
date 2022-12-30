@@ -43,6 +43,7 @@ uniform float bladeCurvature;
 
 uniform bool applyPosWidthVariance = true;
 uniform bool applyHeightVariance = true;
+uniform bool applyBendVariance = true;
 
 // uniform float hillHeightMax;
 // uniform float hillHeightNoiseScale;
@@ -76,8 +77,8 @@ void createBlade(
 	float width = bladeWidth + (applyPosWidthVariance ? bladeWidthVariance * random1(posWS.xz + 123) : 0);
 	float maxBend = bladeBendMax * M_PI / 2 * random1(posWS.xz + 1230);
 
-	mat4 bendMatrix = rotateAroundAxis(vec3(1,0,0), maxBend);
-	mat4 rotMatrix = rotateAroundAxis(vec3(0,1,0), snoise(posWS.xz * 0321) * 2 * M_PI);
+	mat4 bendMatrix = applyBendVariance ? rotateAroundAxis(vec3(1,0,0), maxBend) : mat4(1);
+	mat4 rotMatrix = applyPosWidthVariance ? rotateAroundAxis(vec3(0,1,0), snoise(posWS.xz * 0321) * 2 * M_PI) : mat4(1);
 	mat4 scaleMatrix = mat4(
 		vec4(width,0,0,0),
 		vec4(0,height,0,0),
@@ -93,7 +94,7 @@ void createBlade(
 		float v = i/float(bladeSegments);
 		float u = v / 2;
 
-		mat4 bendBladeMatrix = rotateAroundAxis(vec3(1,0,0), maxBend * pow(v, bladeCurvature));
+		mat4 bendBladeMatrix = applyBendVariance ? rotateAroundAxis(vec3(1,0,0), maxBend * pow(v, bladeCurvature)) : mat4(1);
 		mat4 toWSSegment = rotMatrix * bendBladeMatrix * scaleMatrix;
 
 		setupBladePoint(vertices[i*2], posWS, vec3(2*(u-0.5), v, 0), vec3(0), vec2(u,v), toWSSegment);

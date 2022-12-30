@@ -20,6 +20,8 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.useProgram();
 
+	settings.bladeSegments = settings.tempBladeSegments;
+	settings.bladeCnt = settings.bladeCntTmp;
 	int numBlades = numGrassBlades();
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexDataBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat) * vertexOutputSizeBytes * trianglesPerBlade() * 3 * 
@@ -43,6 +45,7 @@ void GrassHandler::generateGrass() {
 
 	shader_compute_grass.setVec2("density", vec2(settings.density, settings.density));
 
+	shader_compute_grass.setInt("applyBendVariance", settings.applyBendVariance);
 	shader_compute_grass.setInt("applyPosWidthVariance", settings.applyPosWidthVariance);
 	shader_compute_grass.setInt("applyHeightVariance", settings.applyHeightVariance);
 
@@ -50,9 +53,9 @@ void GrassHandler::generateGrass() {
 	// shader_compute_grass.setFloat("hillHeightNoiseScale", settings.hillHeightNoiseScale);
 
 	glDispatchCompute(
-		ceil((2*settings.bladeCnt+1) / workGroupSz.x), 
+		ceil((2*settings.bladeCntTmp+1) / workGroupSz.x), 
 		ceil(1/workGroupSz.y), 
-		ceil((2*settings.bladeCnt+1) / workGroupSz.z));
+		ceil((2*settings.bladeCntTmp+1) / workGroupSz.z));
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
@@ -93,8 +96,6 @@ void GrassHandler::generateGrass() {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
-	settings.bladeSegments = settings.tempBladeSegments;
-	settings.bladeCnt = settings.bladeCntTmp;
 }
 
 void GrassHandler::generateWindTexture() {

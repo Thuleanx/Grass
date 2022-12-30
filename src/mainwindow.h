@@ -45,6 +45,7 @@ private:
 
 	QCheckBox *applyPosWidthVariance;
 	QCheckBox *applyHeightVariance;
+	QCheckBox *applyBendVariance;
 
 	QSlider *hillHeightSlider;
 	QDoubleSpinBox *hillHeightBox;
@@ -61,6 +62,8 @@ private:
 	QSlider *paletteSlider;
 	QSpinBox *paletteBox;
 
+	QSlider *friendsSlider;
+	QSpinBox *friendsBox;
 
     // QSlider *nearSlider;
     // QSlider *farSlider;

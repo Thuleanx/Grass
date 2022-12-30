@@ -118,14 +118,14 @@ void PlayerGroup::drawPlayers(Camera camera) {
 	};
 
 	f(i,0,players.size()) {
-		if ((!i && settings.drawFirstPlayer) || (i && settings.drawFriendPlayer)) {
+		if ((!i && settings.drawFirstPlayer) || (i && settings.friends >= i)) {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, heightMap);
 
 			shader.setMat4("modelMatrix", players[i].getCTM());
 			shader.setVec3("objectPosition", players[i].getPosition());
-			vec4 col = hexToColor(settings.playerColor[settings.colorPalette]);
-			shader.setVec4("playerColor", hexToColor(settings.playerColor[settings.colorPalette]));
+			vec4 col = hexToColor(settings.playerColor[settings.colorPalette][(i-1) % settings.playerColor[settings.colorPalette].size()]);
+			shader.setVec4("playerColor", col);
 			players[i].drawPlayer();
 		}
 	}
@@ -139,7 +139,7 @@ void PlayerGroup::drawLocations() {
 
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	f(i,0,players.size()) {
-		if ((!i && settings.drawFirstPlayer) || (i && settings.drawFriendPlayer)) {
+		if ((!i && settings.drawFirstPlayer) || (i && settings.friends >= i)) {
 			vec2 loc = vec2(
 					players[i].getPosition().x * getVelocityBufferSamplingScale().z + getVelocityBufferSamplingScale().x, 
 					players[i].getPosition().z * getVelocityBufferSamplingScale().w + getVelocityBufferSamplingScale().y
