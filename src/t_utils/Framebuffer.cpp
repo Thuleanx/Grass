@@ -1,5 +1,6 @@
 #include "Framebuffer.h"
 #include "t_utils/ErrorHandler.h"
+#include <iostream>
 using namespace std;
 
 void Framebuffer::initialize() {
@@ -45,6 +46,7 @@ void Framebuffer::createTexture(GLuint &texture, GLenum format, GLenum internalF
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	ErrorHandler::errorCheck("-- on create texture 3");
+	cout << wrapMode << " " << GL_CLAMP << " " << GL_REPEAT << endl;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
 	ErrorHandler::errorCheck("-- on create texture 4");
